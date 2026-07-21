@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Progress - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="font-heading fw-bold text-light mb-0">Progress Dashboard</h1>
+        <div class="badge bg-cta text-white px-3 py-2 fs-6 rounded-pill border border-cta shadow-sm">
+            <i class="bi bi-fire me-1"></i> 3 Day Streak
+        </div>
+    </div>
+
+    <!-- Top Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-secondary small text-uppercase fw-bold mb-2">Avg Score</h6>
+                    <h2 class="text-light font-heading fw-bold mb-0">82<span class="fs-6 text-secondary fw-normal">/100</span></h2>
+                    <span class="text-success small"><i class="bi bi-arrow-up-short"></i>+4 pts this week</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-secondary small text-uppercase fw-bold mb-2">Interviews</h6>
+                    <h2 class="text-light font-heading fw-bold mb-0">12</h2>
+                    <span class="text-secondary small">Total completed</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-secondary small text-uppercase fw-bold mb-2">Top Skill</h6>
+                    <h4 class="text-success font-heading fw-bold mb-0 mt-2">Communication</h4>
+                    <span class="text-secondary small">Avg: 88/100</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-secondary small text-uppercase fw-bold mb-2">Focus Area</h6>
+                    <h4 class="text-warning font-heading fw-bold mb-0 mt-2">System Design</h4>
+                    <span class="text-secondary small">Avg: 70/100</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Chart -->
+        <div class="col-lg-8">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-header bg-transparent border-secondary py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-light fw-bold font-heading">Score Trend</h5>
+                    <select class="form-select form-select-sm bg-surface border-secondary text-light w-auto">
+                        <option>Last 30 Days</option>
+                        <option>Last 3 Months</option>
+                    </select>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Chart.js Canvas Placeholder -->
+                    <div class="w-100 h-100 min-vh-25 bg-surface rounded border border-secondary d-flex align-items-center justify-content-center position-relative">
+                         <span class="text-muted">Chart visualization goes here</span>
+                         <!-- Mock SVG Chart -->
+                         <svg width="100%" height="100%" class="position-absolute top-0 start-0 opacity-50" preserveAspectRatio="none">
+                            <polyline fill="none" stroke="#4FC0D0" stroke-width="3" points="0,200 50,180 100,190 150,150 200,160 250,120 300,130 350,90 400,70" />
+                            <polyline fill="none" stroke="#22C55E" stroke-width="2" stroke-dasharray="4" points="0,200 100,180 200,160 300,120 400,60" />
+                         </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold font-heading">Skill Gaps (Severity)</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-light small">Concurrency (Java)</span>
+                                <span class="badge bg-danger rounded-pill">High</span>
+                            </div>
+                            <div class="progress bg-surface" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: 30%"></div>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-light small">Database Sharding</span>
+                                <span class="badge bg-warning text-dark rounded-pill">Med</span>
+                            </div>
+                            <div class="progress bg-surface" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 55%"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-light small">STAR Method Structuring</span>
+                                <span class="badge bg-info text-dark rounded-pill">Low</span>
+                            </div>
+                            <div class="progress bg-surface" style="height: 6px;">
+                                <div class="progress-bar bg-info" style="width: 75%"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card bg-card-bg border-secondary shadow-sm">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold font-heading">Speech Analytics</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <span class="text-secondary small d-block mb-1">Filler Words Trend</span>
+                        <div class="d-flex align-items-center text-success">
+                            <i class="bi bi-graph-down-arrow fs-4 me-2"></i>
+                            <span class="fw-bold">-15% this week</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-secondary small d-block mb-1">Speaking Rate</span>
+                        <span class="text-light fw-bold">140 WPM <span class="text-success small ms-2">(Optimal)</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

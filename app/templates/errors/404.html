@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-75">
+    <div class="text-center">
+        <div class="position-relative d-inline-block mb-4">
+            <h1 class="display-1 fw-bold font-heading text-primary opacity-25" style="font-size: 10rem;">404</h1>
+            <i class="bi bi-robot text-accent position-absolute top-50 start-50 translate-middle fs-1"></i>
+        </div>
+        <h2 class="font-heading fw-bold text-light mb-3">Lost in the server logic</h2>
+        <p class="text-secondary mb-4 lead">The page you're looking for doesn't exist or has been moved.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary rounded-pill px-4">Go Back</a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-cta rounded-pill px-4 shadow">Go to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

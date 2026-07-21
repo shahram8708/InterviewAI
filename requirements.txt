@@ -1,0 +1,12 @@
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Session
+Flask-Limiter
+Flask-Talisman
+python-dotenv
+cryptography
+google-genai
+PyMuPDF
+Pillow
+WTForms

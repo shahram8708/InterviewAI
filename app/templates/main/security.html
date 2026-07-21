@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Security & Privacy - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="font-heading fw-bold text-light">Security & Privacy</h1>
+        <p class="text-secondary lead">We take the protection of your API keys and personal data seriously.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-key-fill text-accent fs-3 me-3"></i>
+                        <h4 class="font-heading fw-bold text-light mb-0">API Key Handling</h4>
+                    </div>
+                    <p class="text-secondary">
+                        Your Gemini API key is never exposed to the client browser after submission. It is stored securely in your active session and used strictly server-side to communicate with Google's APIs. 
+                    </p>
+                    <p class="text-secondary mb-0">
+                        When your session expires or you log out, the key is permanently removed from our memory. We do not store API keys in any persistent database.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-shield-lock-fill text-success fs-3 me-3"></i>
+                        <h4 class="font-heading fw-bold text-light mb-0">Encryption</h4>
+                    </div>
+                    <p class="text-secondary">
+                        All data transmitted between your browser and our servers is encrypted using industry-standard TLS (HTTPS). 
+                    </p>
+                    <p class="text-secondary mb-0">
+                        Any sensitive session data is encrypted at rest using secure cryptographic algorithms (AES-256 equivalent) provided by our server framework.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-file-earmark-person-fill text-primary fs-3 me-3"></i>
+                        <h4 class="font-heading fw-bold text-light mb-0">Resume Data</h4>
+                    </div>
+                    <p class="text-secondary">
+                        When you upload a resume, we extract the text to provide context for your AI interviews. The original PDF files are not retained after processing.
+                    </p>
+                    <p class="text-secondary mb-0">
+                        The extracted textual profile is stored locally in your session or browser storage, giving you full control over your data.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-google text-danger fs-3 me-3"></i>
+                        <h4 class="font-heading fw-bold text-light mb-0">Third-Party Processing</h4>
+                    </div>
+                    <p class="text-secondary">
+                        Your prompts, responses, and resume context are sent to Google's Gemini API for processing. We do not use your data to train our own models.
+                    </p>
+                    <p class="text-secondary mb-0">
+                        Please refer to Google's API Terms of Service regarding how they handle data submitted via their APIs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

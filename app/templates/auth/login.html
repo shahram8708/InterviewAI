@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Login - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-75">
+    <div class="card bg-card-bg shadow-lg border-0 rounded-4 w-100" style="max-width: 500px;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <h1 class="h3 font-heading fw-bold text-accent">Welcome to InterviewAI Pro</h1>
+                <p class="text-secondary">Sign in to start practicing</p>
+            </div>
+            <form method="POST" class="needs-validation" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control bg-surface border-secondary text-light" id="fullName" name="full_name" placeholder="John Doe" required>
+                    <label for="fullName" class="text-muted">Full Name</label>
+                    <div class="invalid-feedback">Please enter your full name.</div>
+                </div>
+                
+                <div class="form-floating mb-3 position-relative">
+                    <input type="password" class="form-control bg-surface border-secondary text-light" id="apiKey" name="api_key" placeholder="AIzaSy..." required>
+                    <label for="apiKey" class="text-muted">Gemini API Key</label>
+                    <button type="button" class="btn btn-link text-secondary position-absolute end-0 top-50 translate-middle-y text-decoration-none" id="toggleApiKey" aria-label="Toggle API Key visibility"><i class="bi bi-eye"></i></button>
+                    <div class="invalid-feedback">Please provide your Gemini API Key.</div>
+                </div>
+                
+                <div class="mb-4 text-end">
+                    <a href="{{ url_for('auth.api_key_guide') }}" class="small text-accent text-decoration-none">How to get your API key?</a>
+                </div>
+                
+                <div class="accordion mb-4" id="securityAccordion">
+                    <div class="accordion-item bg-transparent border-secondary">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed bg-transparent text-light shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#securityCollapse">
+                                <i class="bi bi-shield-check text-success me-2"></i> How your key is protected
+                            </button>
+                        </h2>
+                        <div id="securityCollapse" class="accordion-collapse collapse" data-bs-parent="#securityAccordion">
+                            <div class="accordion-body text-secondary small">
+                                Your API key is encrypted at rest and never exposed to the browser. It is stored securely in your session which is tied to this specific browser. We do not store your key permanently.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-cta w-100 py-3 rounded-pill fw-bold" id="submitBtn">
+                    <span class="d-flex align-items-center justify-content-center">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Sign In & Start Practicing
+                    </span>
+                </button>
+                <p class="text-center text-muted small mt-3">Session is tied to your current browser.</p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script nonce="{{ csp_nonce() }}">
+    document.getElementById('toggleApiKey')?.addEventListener('click', function() {
+        const input = document.getElementById('apiKey');
+        const icon = this.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+    
+    // Bootstrap validation
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                } else {
+                    const btn = document.getElementById('submitBtn');
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Signing in...';
+                    btn.disabled = true;
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

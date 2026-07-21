@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Server Error - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-75">
+    <div class="text-center">
+        <div class="mb-4">
+            <i class="bi bi-bug text-danger" style="font-size: 5rem;"></i>
+        </div>
+        <h2 class="font-heading fw-bold text-light mb-3">Internal Server Error</h2>
+        <p class="text-secondary mb-4 lead">Our AI circuits got crossed. We've logged the error and are working on it.<br>Please try again in a few moments.</p>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-cta rounded-pill px-4 shadow">
+            Return to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

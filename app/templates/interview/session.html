@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% block title %}Live Interview - InterviewAI Pro{% endblock %}
+{% block extra_head %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<style>
+    /* Specific styles for the live room */
+    .interview-room {
+        height: calc(100vh - 70px);
+        overflow: hidden;
+    }
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(79, 192, 208, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(79, 192, 208, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(79, 192, 208, 0); }
+    }
+    .pulse-red {
+        animation: pulse-red 2s infinite;
+    }
+    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .transcript-container {
+        height: calc(100vh - 350px);
+        overflow-y: auto;
+        scroll-behavior: smooth;
+    }
+    /* Hide nav and footer for immersion */
+    nav.navbar, footer.footer {
+        display: none !important;
+    }
+    body {
+        padding-top: 0 !important;
+    }
+    main#main-content {
+        margin-bottom: 0 !important;
+    }
+</style>
+<script id="session-data" type="application/json" nonce="{{ csp_nonce() }}">
+    {{ session_data | safe }}
+</script>
+{% endblock %}
+{% block content %}
+<div class="interview-room bg-primary-dark d-flex flex-column h-100 w-100 position-absolute top-0 start-0">
+    <!-- Top Bar -->
+    <header class="bg-card-bg border-bottom border-secondary p-3 shadow-sm z-3">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-surface rounded px-3 py-1 border border-secondary font-monospace fs-5 fw-bold text-light" id="timer">00:00</div>
+                <div class="badge bg-primary bg-opacity-25 text-primary border border-primary rounded-pill px-3 py-2" id="stageLabel">Introduction</div>
+            </div>
+            
+            <div class="text-center d-none d-md-block">
+                <span class="text-secondary small fw-medium" id="progressText">Question 1 of ~5</span>
+                <div class="progress bg-surface mt-1" style="height: 4px; width: 150px;">
+                    <div class="progress-bar bg-accent" id="progressBar" role="progressbar" style="width: 20%"></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-outline-danger btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#endModal">End Interview</button>
+        </div>
+    </header>
+
+    <!-- Main Area -->
+    <div class="flex-grow-1 position-relative overflow-hidden">
+        <div class="container h-100 py-3">
+            <div class="row h-100 g-3">
+                
+                <!-- Interviewer Video/Avatar -->
+                <div class="col-lg-4 h-100 d-flex flex-column">
+                    <div class="card bg-card-bg border-secondary h-100 shadow-sm position-relative overflow-hidden">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center h-100 position-relative z-1">
+                            <div class="avatar-wrapper position-relative mb-4">
+                                <!-- Dynamic icon based on persona -->
+                                <div class="bg-surface rounded-circle d-flex align-items-center justify-content-center border-2 border-accent" id="interviewerAvatar" style="width: 120px; height: 120px; border-style: solid;">
+                                    <i class="bi bi-person-video text-light" style="font-size: 4rem;"></i>
+                                </div>
+                                <!-- Speaking Indicator -->
+                                <div class="position-absolute bottom-0 end-0 bg-card-bg rounded-circle p-1" id="speakingIndicator" style="display: none;">
+                                    <div class="bg-success rounded-circle pulse-animation" style="width: 15px; height: 15px;"></div>
+                                </div>
+                            </div>
+                            
+                            <h4 class="text-light font-heading fw-bold mb-1" id="interviewerName">Alex</h4>
+                            <p class="text-accent small mb-0" id="interviewerPersona">Senior Technical Lead</p>
+                            
+                            <!-- Status Text -->
+                            <div class="mt-4 badge bg-surface border border-secondary text-secondary px-3 py-2" id="interviewerStatus" role="status" aria-live="polite">
+                                Initializing...
+                            </div>
+                        </div>
+                        
+                        <!-- Abstract background -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-25 z-0" style="background: radial-gradient(circle at center, var(--bs-primary) 0%, transparent 70%);"></div>
+                    </div>
+                </div>
+                
+                <!-- Transcript Area -->
+                <div class="col-lg-8 h-100 d-flex flex-column">
+                    <div class="card bg-card-bg border-secondary h-100 shadow-sm">
+                        <div class="card-header bg-transparent border-secondary py-2 px-3 d-flex justify-content-between align-items-center">
+                            <span class="text-secondary small fw-medium"><i class="bi bi-card-text me-1"></i> Live Transcript</span>
+                            
+                            <!-- Confidence Meter -->
+                            <div class="d-flex align-items-center gap-2" title="AI Confidence in your answer">
+                                <span class="text-secondary small"><i class="bi bi-speedometer2"></i></span>
+                                <div class="progress bg-surface" style="height: 6px; width: 60px;">
+                                    <div class="progress-bar bg-success" id="confidenceMeter" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body p-0 position-relative">
+                            <div class="transcript-container p-4 d-flex flex-column gap-3" id="transcriptArea" aria-live="polite">
+                                <!-- Messages injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="bg-surface border-top border-secondary p-3 shadow-lg z-3 mt-auto">
+        <div class="container-fluid d-flex flex-column align-items-center">
+            
+            <!-- Voice Controls -->
+            <div id="voiceControls" class="d-flex align-items-center justify-content-center gap-4 w-100 mb-2">
+                
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="langBtn" aria-label="Select Language">
+                        EN-US
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark bg-card-bg border-secondary shadow">
+                        <li><a class="dropdown-item active" href="#" data-lang="en-US">English (US)</a></li>
+                        <li><a class="dropdown-item" href="#" data-lang="en-GB">English (UK)</a></li>
+                        <li><a class="dropdown-item" href="#" data-lang="en-IN">English (IN)</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Main Mic Button -->
+                <button class="btn btn-lg rounded-circle shadow-lg position-relative d-flex align-items-center justify-content-center bg-card-bg border border-secondary text-light transition-all" id="micBtn" style="width: 70px; height: 70px;" aria-label="Microphone">
+                    <i class="bi bi-mic-fill fs-3" id="micIcon"></i>
+                </button>
+                
+                <!-- Stop Answering -->
+                <button class="btn btn-sm btn-outline-warning rounded-pill px-3" id="stopAnsweringBtn" disabled>
+                    <i class="bi bi-stop-circle me-1"></i> I'm Done
+                </button>
+            </div>
+            
+            <!-- Status Text -->
+            <div class="text-center w-100">
+                <span class="text-secondary small" id="micStatus">Click mic when ready to speak</span>
+            </div>
+            
+            <!-- Text Fallback (Hidden by default) -->
+            <div id="textControls" class="w-100 d-none max-w-md mx-auto mt-2">
+                <div class="input-group">
+                    <textarea class="form-control bg-card-bg border-secondary text-light resize-none" id="textInput" rows="2" placeholder="Type your answer here..." aria-label="Text Answer"></textarea>
+                    <button class="btn btn-accent" id="sendTextBtn" type="button"><i class="bi bi-send-fill"></i></button>
+                </div>
+                <div class="text-center mt-1">
+                    <button class="btn btn-link btn-sm text-secondary text-decoration-none" id="switchToVoiceBtn">Switch back to Voice</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- End Confirmation Modal -->
+<div class="modal fade" id="endModal" tabindex="-1" aria-labelledby="endModalLabel" aria-hidden="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-card-bg border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-light font-heading fw-bold" id="endModalLabel">End Interview?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-secondary">
+                Are you sure you want to end the interview early? We'll generate a report based on the questions completed so far.
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('analytics.report', session_id='current') }}" id="endInterviewForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">End Interview</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Speech Not Supported Modal -->
+<div class="modal fade" id="speechErrorModal" tabindex="-1" aria-labelledby="speechErrorModalLabel" aria-hidden="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-card-bg border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-light font-heading fw-bold" id="speechErrorModalLabel"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Microphone Issue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-secondary">
+                We couldn't access your microphone or your browser doesn't support the required speech features. 
+                <br><br>
+                Don't worry, you can switch to text mode to continue your interview.
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-accent rounded-pill px-4" data-bs-dismiss="modal" id="enableTextModeBtn">Use Text Mode</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audio element for AI voice -->
+<audio id="aiVoice" class="d-none"></audio>
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+{% endblock %}

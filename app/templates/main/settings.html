@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}Settings - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h1 class="font-heading fw-bold text-light mb-4">Settings</h1>
+    
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="list-group list-group-flush rounded bg-card-bg border border-secondary sticky-top" style="top: 80px;">
+                <a href="#profile" class="list-group-item list-group-item-action bg-transparent text-light border-secondary active-setting" data-bs-toggle="list">Profile</a>
+                <a href="#api-key" class="list-group-item list-group-item-action bg-transparent text-light border-secondary" data-bs-toggle="list">API Key</a>
+                <a href="#accessibility" class="list-group-item list-group-item-action bg-transparent text-light border-secondary" data-bs-toggle="list">Accessibility</a>
+                <a href="#voice" class="list-group-item list-group-item-action bg-transparent text-light border-secondary" data-bs-toggle="list">Voice & Audio</a>
+            </div>
+        </div>
+        
+        <div class="col-lg-9">
+            <div class="tab-content">
+                <!-- Profile Settings -->
+                <div class="tab-pane fade show active" id="profile">
+                    <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                        <div class="card-header bg-transparent border-secondary py-3">
+                            <h5 class="mb-0 text-light fw-bold">Profile Settings</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="POST" action="{{ url_for('main.settings') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="form_type" value="profile">
+                                <div class="mb-3">
+                                    <label for="fullName" class="form-label text-secondary">Full Name</label>
+                                    <input type="text" class="form-control bg-surface border-secondary text-light" id="fullName" name="full_name" value="{{ session.get('user_name', '') }}" required>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Key Settings -->
+                <div class="tab-pane fade" id="api-key">
+                    <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                        <div class="card-header bg-transparent border-secondary py-3">
+                            <h5 class="mb-0 text-light fw-bold">Gemini API Key</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="POST" action="{{ url_for('main.settings') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input type="hidden" name="form_type" value="api_key">
+                                <div class="mb-3">
+                                    <label for="newApiKey" class="form-label text-secondary">Update API Key</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control bg-surface border-secondary text-light" id="newApiKey" name="api_key" placeholder="Enter new API key to update">
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleSettingsApiKey"><i class="bi bi-eye"></i></button>
+                                    </div>
+                                    <div class="form-text text-muted">Leave blank to keep current key. Updates will be tested before saving.</div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Update Key</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessibility Settings -->
+                <div class="tab-pane fade" id="accessibility">
+                    <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                        <div class="card-header bg-transparent border-secondary py-3">
+                            <h5 class="mb-0 text-light fw-bold">Accessibility</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <h6 class="text-light mb-3">Theme Preference</h6>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input theme-selector" type="radio" name="theme" id="themeDark" value="dark" checked>
+                                    <label class="form-check-label text-secondary" for="themeDark">Dark Mode</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input theme-selector" type="radio" name="theme" id="themeLight" value="light">
+                                    <label class="form-check-label text-secondary" for="themeLight">Light Mode</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input theme-selector" type="radio" name="theme" id="themeSystem" value="system">
+                                    <label class="form-check-label text-secondary" for="themeSystem">System Default</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="highContrastToggleSetting">
+                                <label class="form-check-label text-light" for="highContrastToggleSetting">Enable High Contrast Mode</label>
+                                <div class="form-text text-muted">Increases contrast between text and background.</div>
+                            </div>
+                            
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="reducedMotionToggle">
+                                <label class="form-check-label text-light" for="reducedMotionToggle">Reduce Motion</label>
+                                <div class="form-text text-muted">Disables animations and transitions.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Settings -->
+                <div class="tab-pane fade" id="voice">
+                    <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                        <div class="card-header bg-transparent border-secondary py-3">
+                            <h5 class="mb-0 text-light fw-bold">Voice & Audio</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <label for="speechLocale" class="form-label text-secondary">Speech Recognition Locale</label>
+                                <select class="form-select bg-surface border-secondary text-light" id="speechLocale">
+                                    <option value="en-US">English (United States)</option>
+                                    <option value="en-GB">English (United Kingdom)</option>
+                                    <option value="en-IN">English (India)</option>
+                                </select>
+                                <div class="form-text text-muted">Select the dialect for better transcription accuracy.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="voiceSpeed" class="form-label text-secondary">Interviewer Speaking Speed</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-turtle text-muted"></i>
+                                    <input type="range" class="form-range" id="voiceSpeed" min="0.5" max="1.5" step="0.1" value="1.0">
+                                    <i class="bi bi-lightning-fill text-muted"></i>
+                                </div>
+                                <div class="form-text text-muted text-center mt-1"><span id="speedValue">1.0</span>x</div>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="testVoiceBtn">Test Voice</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script nonce="{{ csp_nonce() }}">
+    document.getElementById('toggleSettingsApiKey')?.addEventListener('click', function() {
+        const input = document.getElementById('newApiKey');
+        const icon = this.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+
+    const voiceSpeed = document.getElementById('voiceSpeed');
+    const speedValue = document.getElementById('speedValue');
+    if(voiceSpeed) {
+        voiceSpeed.addEventListener('input', (e) => {
+            speedValue.textContent = e.target.value;
+            localStorage.setItem('voiceSpeed', e.target.value);
+        });
+        // Load saved
+        const saved = localStorage.getItem('voiceSpeed');
+        if(saved) {
+            voiceSpeed.value = saved;
+            speedValue.textContent = saved;
+        }
+    }
+    
+    document.getElementById('speechLocale')?.addEventListener('change', (e) => {
+        localStorage.setItem('speechLocale', e.target.value);
+    });
+    const savedLocale = localStorage.getItem('speechLocale');
+    if(savedLocale && document.getElementById('speechLocale')) {
+        document.getElementById('speechLocale').value = savedLocale;
+    }
+</script>
+{% endblock %}

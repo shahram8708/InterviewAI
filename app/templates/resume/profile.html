@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Resume Profile - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="font-heading fw-bold text-light mb-0">Extracted Profile</h1>
+        <div>
+            <a href="{{ url_for('resume.upload_get') }}" class="btn btn-outline-secondary btn-sm me-2">Re-upload</a>
+            <a href="{{ url_for('interview.configure_get') }}" class="btn btn-cta btn-sm">Continue Setup <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+    
+    <div class="alert alert-info bg-surface border-info text-info mb-4">
+        <i class="bi bi-info-circle-fill me-2"></i> Review the information extracted from your resume. We use this to personalize your interview questions.
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Experience -->
+            <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                <div class="card-header bg-transparent border-secondary py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-light fw-bold"><i class="bi bi-briefcase text-accent me-2"></i>Experience</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Timeline placeholder -->
+                    <div class="position-relative ps-4 border-start border-secondary pb-4">
+                        <div class="position-absolute start-0 translate-middle-x bg-accent rounded-circle border border-card-bg" style="width: 12px; height: 12px; top: 5px;"></div>
+                        <h5 class="text-light fw-bold mb-1">Senior Software Engineer</h5>
+                        <h6 class="text-secondary mb-2">Tech Corp • 2021 - Present</h6>
+                        <ul class="text-secondary small mb-0 ps-3">
+                            <li>Led backend migration to microservices architecture.</li>
+                            <li>Mentored junior engineers and conducted code reviews.</li>
+                        </ul>
+                    </div>
+                    <div class="position-relative ps-4 border-start border-secondary">
+                        <div class="position-absolute start-0 translate-middle-x bg-secondary rounded-circle border border-card-bg" style="width: 12px; height: 12px; top: 5px;"></div>
+                        <h5 class="text-light fw-bold mb-1">Software Engineer</h5>
+                        <h6 class="text-secondary mb-2">Startup Inc • 2018 - 2021</h6>
+                        <ul class="text-secondary small mb-0 ps-3">
+                            <li>Developed REST APIs using Python and Django.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects -->
+            <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold"><i class="bi bi-code-slash text-primary me-2"></i>Projects</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 border-bottom border-secondary pb-3">
+                        <h6 class="text-light fw-bold">E-commerce Platform</h6>
+                        <p class="text-secondary small mb-1">Built a scalable e-commerce backend handling 10k+ concurrent users.</p>
+                        <span class="badge bg-surface border border-secondary text-muted">Python</span>
+                        <span class="badge bg-surface border border-secondary text-muted">Redis</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Education -->
+            <div class="card bg-card-bg border-secondary shadow-sm">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold"><i class="bi bi-mortarboard text-warning me-2"></i>Education</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-light fw-bold mb-1">B.S. Computer Science</h6>
+                    <p class="text-secondary small mb-0">University of Technology • 2014 - 2018</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Summary stats -->
+            <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <h6 class="text-secondary mb-3">Estimated Career Level</h6>
+                    <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-4 py-2 fs-5 border border-primary">Mid-Senior Level</span>
+                </div>
+            </div>
+            
+            <!-- Skills -->
+            <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold"><i class="bi bi-tools text-success me-2"></i>Skills & Tech</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Python</span>
+                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Java</span>
+                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">AWS</span>
+                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Docker</span>
+                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Kubernetes</span>
+                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">System Design</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Strengths -->
+            <div class="card bg-card-bg border-secondary shadow-sm">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold"><i class="bi bi-lightning-charge text-warning me-2"></i>Key Strengths</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled text-secondary small mb-0">
+                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Backend Architecture</li>
+                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Cloud Deployment</li>
+                        <li><i class="bi bi-check2 text-success me-2"></i>Team Leadership</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

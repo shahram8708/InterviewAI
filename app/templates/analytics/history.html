@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Interview History - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <h1 class="font-heading fw-bold text-light mb-3 mb-md-0">Interview History</h1>
+        <a href="{{ url_for('interview.configure_get') }}" class="btn btn-cta rounded-pill shadow-sm"><i class="bi bi-plus-lg me-1"></i> New Interview</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+        <div class="card-body p-3">
+            <form class="row g-2 align-items-end" method="GET">
+                <div class="col-md-3">
+                    <label class="form-label text-secondary small mb-1">Company</label>
+                    <select class="form-select form-select-sm bg-surface border-secondary text-light" name="company">
+                        <option value="">All Companies</option>
+                        <option value="Google">Google</option>
+                        <option value="Amazon">Amazon</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-secondary small mb-1">Type</label>
+                    <select class="form-select form-select-sm bg-surface border-secondary text-light" name="type">
+                        <option value="">All Types</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Behavioral">Behavioral</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-secondary small mb-1">Date Range</label>
+                    <select class="form-select form-select-sm bg-surface border-secondary text-light" name="date">
+                        <option value="all">All Time</option>
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days">Last 30 Days</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary btn-sm w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- History List -->
+    {% if sessions %}
+    <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+        <div class="list-group list-group-flush rounded">
+            {% for session in sessions %}
+            <a href="{{ url_for('analytics.report', session_id=session.id) }}" class="list-group-item list-group-item-action bg-transparent border-secondary p-4 hover-bg-surface transition-all">
+                <div class="row align-items-center">
+                    <div class="col-md-8 mb-2 mb-md-0">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h5 class="mb-0 text-light fw-bold font-heading">{{ session.job_role }}</h5>
+                            <span class="badge bg-surface border border-secondary text-muted">{{ session.interview_type }}</span>
+                        </div>
+                        <p class="text-secondary small mb-0">
+                            <i class="bi bi-building me-1"></i> {{ session.company or 'General' }} • 
+                            <i class="bi bi-calendar3 me-1"></i> {{ session.date }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end gap-3">
+                        <div class="text-end">
+                            <span class="d-block text-secondary small">Score</span>
+                            <span class="fs-4 fw-bold {% if session.score >= 80 %}text-success{% elif session.score >= 60 %}text-warning{% else %}text-danger{% endif %}">{{ session.score }}</span>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted fs-5"></i>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Pagination placeholder -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center pagination-sm">
+            <li class="page-item disabled"><a class="page-link bg-card-bg border-secondary text-secondary" href="#">Previous</a></li>
+            <li class="page-item active"><a class="page-link bg-primary border-primary" href="#">1</a></li>
+            <li class="page-item"><a class="page-link bg-card-bg border-secondary text-light" href="#">2</a></li>
+            <li class="page-item"><a class="page-link bg-card-bg border-secondary text-light" href="#">Next</a></li>
+        </ul>
+    </nav>
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-5">
+        <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+            <i class="bi bi-journal-x text-secondary" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="font-heading fw-bold text-light mb-2">No interviews yet</h3>
+        <p class="text-secondary mb-4">Start practicing to build up your history and track progress.</p>
+        <a href="{{ url_for('interview.configure_get') }}" class="btn btn-cta rounded-pill px-4 shadow">Start Your First Interview</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

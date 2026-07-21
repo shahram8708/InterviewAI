@@ -1,0 +1,115 @@
+# -----------------------------
+# Python bytecode / caches
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+.ruff_cache/
+.hypothesis/
+.nox/
+.tox/
+
+# -----------------------------
+# Python environment / dependencies
+# -----------------------------
+.venv/
+venv/
+env/
+ENV/
+.python-version
+pip-wheel-metadata/
+
+# -----------------------------
+# Build / packaging artifacts
+# -----------------------------
+build/
+dist/
+site/
+.eggs/
+*.egg
+*.egg-info/
+
+# -----------------------------
+# Test / coverage / profiling
+# -----------------------------
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+.cache/
+*.cover
+*.py,cover
+*.prof
+
+# -----------------------------
+# Runtime files, logs, temp files
+# -----------------------------
+*.log
+logs/
+log/
+*.pid
+*.pid.lock
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# -----------------------------
+# Flask / project runtime data
+# -----------------------------
+instance/
+uploads/
+flask_session/
+*.sqlite
+*.sqlite3
+*.db
+
+# -----------------------------
+# Environment / secrets
+# -----------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# -----------------------------
+# IDE / editor settings
+# -----------------------------
+.vscode/
+.idea/
+*.iml
+
+# -----------------------------
+# Frontend / JS tooling (if added)
+# -----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+
+# -----------------------------
+# OS-specific files
+# -----------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# -----------------------------
+# Git / patch leftovers
+# -----------------------------
+*.orig
+*.rej

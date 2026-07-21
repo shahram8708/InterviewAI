@@ -1,0 +1,17 @@
+{
+  "name": "InterviewAI Pro - AI Mock Interview Platform",
+  "short_name": "InterviewAI",
+  "description": "Master your interview skills with AI-powered mock interviews",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0A1628",
+  "theme_color": "#0A1628",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/static/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

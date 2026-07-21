@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}About - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="font-heading fw-bold text-light mb-4">About InterviewAI Pro</h1>
+            
+            <div class="card bg-card-bg border-secondary shadow-sm mb-5">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="text-accent font-heading fw-bold mb-3">Our Mission</h3>
+                    <p class="text-secondary lead mb-4">
+                        To democratize access to high-quality interview preparation through advanced AI technology, helping candidates land their dream roles with confidence.
+                    </p>
+                    
+                    <hr class="border-secondary my-4">
+                    
+                    <h3 class="text-light font-heading fw-bold mb-3">How It Works</h3>
+                    <p class="text-secondary mb-4">
+                        InterviewAI Pro leverages Google's Gemini AI to simulate realistic interview environments. By parsing your resume and desired role, it generates contextual questions and evaluates your spoken or written responses in real-time.
+                    </p>
+                    
+                    <h3 class="text-light font-heading fw-bold mb-3">Technology</h3>
+                    <p class="text-secondary mb-4">
+                        Built with Python, Flask, and Bootstrap 5, powered by Google Gemini AI for natural language processing and Web Speech API for voice recognition.
+                    </p>
+
+                    <div class="bg-surface border border-secondary rounded p-4 mt-4 text-center">
+                        {% if enable_branding %}
+                            <p class="text-light fw-bold mb-0">Proudly developed by {{ institution_name }}</p>
+                        {% else %}
+                            <p class="text-light fw-bold mb-0">Built and refined through real-world interview-preparation practice</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

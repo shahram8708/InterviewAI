@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% block title %}Configure Interview - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h1 class="font-heading fw-bold text-light">Configure Your Interview</h1>
+        <p class="text-secondary">Tailor the mock interview to your target role.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('interview.configure_post') }}" class="needs-validation" novalidate id="configForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        
+        <div class="row g-4">
+            <!-- Left Column: Details -->
+            <div class="col-lg-8">
+                <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="font-heading text-light mb-4 border-bottom border-secondary pb-2">Target Position</h4>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="jobRole" class="form-label text-secondary fw-medium">Job Role <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control bg-surface border-secondary text-light" id="jobRole" name="job_role" list="roleOptions" placeholder="e.g., Software Engineer" required>
+                                <datalist id="roleOptions">
+                                    <option value="Software Engineer">
+                                    <option value="Data Analyst">
+                                    <option value="Product Manager">
+                                    <option value="UI/UX Designer">
+                                    <option value="DevOps Engineer">
+                                    <option value="Data Scientist">
+                                </datalist>
+                                <div class="invalid-feedback">Please specify a job role.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="company" class="form-label text-secondary fw-medium">Target Company</label>
+                                <input type="text" class="form-control bg-surface border-secondary text-light" id="company" name="company" list="companyOptions" placeholder="e.g., Google (Optional)">
+                                <datalist id="companyOptions">
+                                    <option value="Google">
+                                    <option value="Amazon">
+                                    <option value="Microsoft">
+                                    <option value="Meta">
+                                    <option value="Apple">
+                                    <option value="Netflix">
+                                    <option value="Infosys">
+                                    <option value="TCS">
+                                </datalist>
+                                <div class="form-text text-muted small">We'll tailor questions to their known style.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-medium d-block">Experience Level <span class="text-danger">*</span></label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="experience_level" id="expFresher" value="Fresher" required>
+                                <label class="btn btn-outline-secondary" for="expFresher">Fresher</label>
+                                
+                                <input type="radio" class="btn-check" name="experience_level" id="exp1to2" value="1-2 Years">
+                                <label class="btn btn-outline-secondary" for="exp1to2">1-2 Yrs</label>
+                                
+                                <input type="radio" class="btn-check" name="experience_level" id="exp3to5" value="3-5 Years">
+                                <label class="btn btn-outline-secondary" for="exp3to5">3-5 Yrs</label>
+                                
+                                <input type="radio" class="btn-check" name="experience_level" id="exp5plus" value="5+ Years">
+                                <label class="btn btn-outline-secondary" for="exp5plus">5+ Yrs</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="interviewType" class="form-label text-secondary fw-medium">Interview Type <span class="text-danger">*</span></label>
+                            <select class="form-select bg-surface border-secondary text-light" id="interviewType" name="interview_type" required>
+                                <option value="" selected disabled>Select focus area...</option>
+                                <option value="HR">HR / Culture Fit</option>
+                                <option value="Technical">Technical / Coding</option>
+                                <option value="Behavioral">Behavioral (STAR Method)</option>
+                                <option value="System Design">System Design / Architecture</option>
+                                <option value="Mixed">Mixed (General)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-card-bg border-secondary shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="font-heading text-light mb-4 border-bottom border-secondary pb-2">Interviewer Persona</h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check persona-select" name="persona" id="personaFriendly" value="Friendly Recruiter" required>
+                                <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaFriendly">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="bg-success bg-opacity-25 rounded-circle p-2 me-2">
+                                                <i class="bi bi-emoji-smile text-success"></i>
+                                            </div>
+                                            <h6 class="text-light mb-0 fw-bold">Friendly Recruiter</h6>
+                                        </div>
+                                        <p class="text-secondary small mb-0">Warm, encouraging, focuses on your potential and culture fit.</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check persona-select" name="persona" id="personaStrict" value="Strict Hiring Manager">
+                                <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaStrict">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="bg-warning bg-opacity-25 rounded-circle p-2 me-2">
+                                                <i class="bi bi-person-badge text-warning"></i>
+                                            </div>
+                                            <h6 class="text-light mb-0 fw-bold">Strict Manager</h6>
+                                        </div>
+                                        <p class="text-secondary small mb-0">Direct, probes deeply into your answers, high standards.</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check persona-select" name="persona" id="personaTechLead" value="Senior Technical Lead">
+                                <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaTechLead">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="bg-primary bg-opacity-25 rounded-circle p-2 me-2">
+                                                <i class="bi bi-laptop text-primary"></i>
+                                            </div>
+                                            <h6 class="text-light mb-0 fw-bold">Tech Lead</h6>
+                                        </div>
+                                        <p class="text-secondary small mb-0">Analytical, focuses on trade-offs, architecture, and coding details.</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="radio" class="btn-check persona-select" name="persona" id="personaFaang" value="FAANG Interviewer">
+                                <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaFaang">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="bg-danger bg-opacity-25 rounded-circle p-2 me-2">
+                                                <i class="bi bi-building text-danger"></i>
+                                            </div>
+                                            <h6 class="text-light mb-0 fw-bold">FAANG Bar Raiser</h6>
+                                        </div>
+                                        <p class="text-secondary small mb-0">Extremely rigorous, focuses on scale, edge cases, and impact.</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Summary -->
+            <div class="col-lg-4">
+                <div class="card bg-card-bg border-accent shadow-sm sticky-top" style="top: 80px;">
+                    <div class="card-header bg-accent text-primary-dark fw-bold py-3">
+                        Interview Summary
+                    </div>
+                    <div class="card-body p-4">
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-secondary small">Role</span>
+                                <span class="text-light fw-medium text-end" id="summaryRole">-</span>
+                            </li>
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-secondary small">Company</span>
+                                <span class="text-light fw-medium text-end" id="summaryCompany">General</span>
+                            </li>
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-secondary small">Experience</span>
+                                <span class="text-light fw-medium text-end" id="summaryExp">-</span>
+                            </li>
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-secondary small">Type</span>
+                                <span class="text-light fw-medium text-end" id="summaryType">-</span>
+                            </li>
+                            <li class="d-flex justify-content-between border-top border-secondary pt-3 mt-2">
+                                <span class="text-secondary small">Persona</span>
+                                <span class="text-accent fw-medium text-end" id="summaryPersona">-</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-cta rounded-pill fw-bold py-2">Continue to Review <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script nonce="{{ csp_nonce() }}">
+    // Live update summary
+    const updateSummary = () => {
+        document.getElementById('summaryRole').textContent = document.getElementById('jobRole').value || '-';
+        document.getElementById('summaryCompany').textContent = document.getElementById('company').value || 'General';
+        
+        const exp = document.querySelector('input[name="experience_level"]:checked');
+        document.getElementById('summaryExp').textContent = exp ? exp.value : '-';
+        
+        const type = document.getElementById('interviewType');
+        document.getElementById('summaryType').textContent = type.options[type.selectedIndex]?.text || '-';
+        
+        const persona = document.querySelector('input[name="persona"]:checked');
+        document.getElementById('summaryPersona').textContent = persona ? persona.value : '-';
+    };
+
+    document.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('input', updateSummary);
+        el.addEventListener('change', updateSummary);
+    });
+
+    // Form validation
+    (() => {
+        'use strict'
+        const form = document.getElementById('configForm')
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })()
+</script>
+{% endblock %}

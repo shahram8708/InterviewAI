@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}InterviewAI Pro - Master Your Interview Skills{% endblock %}
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5 position-relative overflow-hidden">
+    <div class="container position-relative z-1 py-5 my-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-3 fw-bold font-heading text-light mb-4">Master Your <span class="text-accent">Interview</span> Skills with AI</h1>
+                <p class="lead text-secondary mb-5 fs-4">Practice realistic interviews with advanced AI, get instant feedback, and land your dream job faster.</p>
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-cta btn-lg rounded-pill px-5 fw-bold shadow-lg">Get Started Free</a>
+                    <a href="#how-it-works" class="btn btn-outline-light btn-lg rounded-pill px-5">How it works</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <!-- Decorative element placeholder -->
+                    <div class="bg-card-bg border border-secondary rounded-4 shadow-lg p-4 rotate-2">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-accent rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="bi bi-person-workspace text-primary-dark fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-light">Senior Tech Lead</h6>
+                                <small class="text-secondary">Google • Technical Interview</small>
+                            </div>
+                        </div>
+                        <div class="bg-surface rounded p-3 mb-3 border border-secondary">
+                            <p class="mb-0 small text-light">"Can you explain the trade-offs between a monolithic architecture and microservices for a rapidly scaling application?"</p>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <div class="bg-primary-dark rounded p-3 border border-primary w-75">
+                                <p class="mb-0 small text-light text-end">"Certainly. A monolithic architecture offers simplicity in initial development and deployment..."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-surface" id="features">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="font-heading fw-bold text-light">Why Choose InterviewAI Pro?</h2>
+            <p class="text-secondary">Everything you need to prepare with confidence.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-card-bg border-secondary h-100 shadow-sm text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-robot text-accent fs-1 mb-3"></i>
+                        <h5 class="card-title text-light fw-bold">AI-Powered Interviews</h5>
+                        <p class="card-text text-secondary small">Dynamic questions tailored to your target role and company based on real interview data.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-card-bg border-secondary h-100 shadow-sm text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-mic text-primary fs-1 mb-3"></i>
+                        <h5 class="card-title text-light fw-bold">Voice-Driven Practice</h5>
+                        <p class="card-text text-secondary small">Speak your answers naturally. Our system processes your speech in real-time.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-card-bg border-secondary h-100 shadow-sm text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-bar-chart-line text-success fs-1 mb-3"></i>
+                        <h5 class="card-title text-light fw-bold">Real-Time Feedback</h5>
+                        <p class="card-text text-secondary small">Get actionable insights on communication, technical accuracy, and confidence immediately.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card bg-card-bg border-secondary h-100 shadow-sm text-center p-4">
+                    <div class="card-body">
+                        <i class="bi bi-building text-warning fs-1 mb-3"></i>
+                        <h5 class="card-title text-light fw-bold">Company-Specific</h5>
+                        <p class="card-text text-secondary small">Simulate interviews for top tech companies with specialized personas and question banks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How it Works -->
+<section class="py-5" id="how-it-works">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="font-heading fw-bold text-light">How It Works</h2>
+            <p class="text-secondary">Four simple steps to interview readiness.</p>
+        </div>
+        <div class="row g-4 position-relative">
+            <div class="col-md-3 text-center">
+                <div class="bg-card-bg rounded-circle mx-auto d-flex align-items-center justify-content-center border border-accent shadow mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-file-earmark-arrow-up fs-2 text-accent"></i>
+                </div>
+                <h5 class="text-light">1. Upload Resume</h5>
+                <p class="text-secondary small">We analyze your background to tailor the interview.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="bg-card-bg rounded-circle mx-auto d-flex align-items-center justify-content-center border border-primary shadow mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-sliders fs-2 text-primary"></i>
+                </div>
+                <h5 class="text-light">2. Configure Interview</h5>
+                <p class="text-secondary small">Select your target role, company, and difficulty.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="bg-card-bg rounded-circle mx-auto d-flex align-items-center justify-content-center border border-success shadow mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-chat-dots fs-2 text-success"></i>
+                </div>
+                <h5 class="text-light">3. Practice with AI</h5>
+                <p class="text-secondary small">Engage in a realistic voice or text-based conversation.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="bg-card-bg rounded-circle mx-auto d-flex align-items-center justify-content-center border border-warning shadow mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-clipboard-data fs-2 text-warning"></i>
+                </div>
+                <h5 class="text-light">4. Get Feedback</h5>
+                <p class="text-secondary small">Review detailed analytics and model answers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="py-5 bg-primary-dark">
+    <div class="container py-5 text-center border-top border-secondary">
+        <h2 class="font-heading fw-bold text-light mb-4">Ready to ace your next interview?</h2>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-cta btn-lg rounded-pill px-5 shadow">Start Practicing Now</a>
+    </div>
+</section>
+{% endblock %}

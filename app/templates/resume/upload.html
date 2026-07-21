@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}Upload Resume - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <h1 class="font-heading fw-bold text-light">Upload Your Resume</h1>
+                <p class="text-secondary">We'll analyze your background to personalize your interview questions.</p>
+            </div>
+            
+            <div class="card bg-card-bg border-secondary shadow-sm">
+                <div class="card-body p-5">
+                    <form id="uploadForm" method="POST" enctype="multipart/form-data" action="{{ url_for('resume.upload_get') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <div class="upload-area border-2 border-dashed border-secondary rounded-4 p-5 text-center position-relative transition-all" id="dropZone">
+                            <input type="file" name="resume" id="resumeInput" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" accept=".pdf" required aria-label="Upload PDF Resume">
+                            
+                            <div id="uploadContent">
+                                <i class="bi bi-cloud-arrow-up text-accent fs-1 mb-3"></i>
+                                <h4 class="text-light fw-bold font-heading">Drag & drop your resume here</h4>
+                                <p class="text-secondary small mb-3">or click to browse files</p>
+                                <span class="badge bg-secondary text-light">PDF only (Max 5MB)</span>
+                            </div>
+                            
+                            <div id="fileSelectedContent" class="d-none">
+                                <i class="bi bi-file-earmark-pdf-fill text-danger fs-1 mb-3"></i>
+                                <h5 class="text-light fw-bold font-heading text-truncate px-3" id="fileName">filename.pdf</h5>
+                                <p class="text-secondary small mb-3" id="fileSize">0 KB</p>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" id="changeFileBtn">Change File</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Progress (Hidden initially) -->
+                        <div id="uploadProgress" class="d-none mt-4">
+                            <p class="text-light small mb-2 text-center" id="progressText">Analyzing your resume...</p>
+                            <div class="progress bg-surface" style="height: 10px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-accent" role="progressbar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-cta btn-lg rounded-pill px-5 fw-bold w-100" id="submitBtn" disabled>
+                                Analyze Resume
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('interview.configure_get') }}" class="text-secondary small text-decoration-none">Skip for now, I'll enter details manually</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script nonce="{{ csp_nonce() }}">
+    const dropZone = document.getElementById('dropZone');
+    const resumeInput = document.getElementById('resumeInput');
+    const uploadContent = document.getElementById('uploadContent');
+    const fileSelectedContent = document.getElementById('fileSelectedContent');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const submitBtn = document.getElementById('submitBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadProgress = document.getElementById('uploadProgress');
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Highlight drop zone when item is dragged over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add('border-accent', 'bg-surface');
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove('border-accent', 'bg-surface');
+    }
+
+    // Handle dropped files
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if(files.length) {
+            resumeInput.files = files;
+            updateFileInfo();
+        }
+    }
+    
+    resumeInput.addEventListener('change', updateFileInfo);
+    
+    document.getElementById('changeFileBtn').addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent form submission if in button
+        e.stopPropagation();
+        resumeInput.click();
+    });
+
+    function updateFileInfo() {
+        if(resumeInput.files.length > 0) {
+            const file = resumeInput.files[0];
+            
+            if(file.type !== 'application/pdf') {
+                alert('Please upload a PDF file.');
+                resumeInput.value = '';
+                return;
+            }
+            
+            if(file.size > 5 * 1024 * 1024) {
+                alert('File is too large. Max size is 5MB.');
+                resumeInput.value = '';
+                return;
+            }
+            
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
+            
+            uploadContent.classList.add('d-none');
+            fileSelectedContent.classList.remove('d-none');
+            submitBtn.disabled = false;
+        } else {
+            uploadContent.classList.remove('d-none');
+            fileSelectedContent.classList.add('d-none');
+            submitBtn.disabled = true;
+        }
+    }
+    
+    uploadForm.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('d-none');
+        dropZone.classList.add('opacity-50');
+        resumeInput.disabled = true;
+        uploadProgress.classList.remove('d-none');
+    });
+</script>
+{% endblock %}

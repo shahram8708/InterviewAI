@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}API Key Guide - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="font-heading fw-bold text-accent">How to get your Gemini API Key</h1>
+                <p class="lead text-secondary">Follow these simple steps to generate your free API key and start practicing.</p>
+                <div class="alert bg-surface border-info text-start mt-4">
+                    <i class="bi bi-info-circle-fill text-info me-2"></i> <strong>What is an API key?</strong> It's a special code that allows our platform to securely connect to Google's AI models to conduct your mock interviews.
+                </div>
+            </div>
+            
+            <div class="timeline position-relative">
+                <!-- Step 1 -->
+                <div class="card bg-card-bg border-secondary mb-4 shadow-sm">
+                    <div class="card-body p-4 d-flex">
+                        <div class="me-4 flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-4 fw-bold" style="width: 50px; height: 50px;">1</div>
+                        </div>
+                        <div>
+                            <h3 class="h5 font-heading fw-bold text-light">Visit Google AI Studio</h3>
+                            <p class="text-secondary mb-3">Go to the Google AI Studio portal to manage your API keys.</p>
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn btn-outline-accent btn-sm">Open Google AI Studio <i class="bi bi-box-arrow-up-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="card bg-card-bg border-secondary mb-4 shadow-sm">
+                    <div class="card-body p-4 d-flex">
+                        <div class="me-4 flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-4 fw-bold" style="width: 50px; height: 50px;">2</div>
+                        </div>
+                        <div>
+                            <h3 class="h5 font-heading fw-bold text-light">Sign in with Google</h3>
+                            <p class="text-secondary mb-0">Sign in using your standard Google account credentials.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="card bg-card-bg border-secondary mb-4 shadow-sm">
+                    <div class="card-body p-4 d-flex">
+                        <div class="me-4 flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-4 fw-bold" style="width: 50px; height: 50px;">3</div>
+                        </div>
+                        <div>
+                            <h3 class="h5 font-heading fw-bold text-light">Navigate to API Keys</h3>
+                            <p class="text-secondary mb-0">Once logged in, look for the "Get API key" or "API Keys" section in the left sidebar.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="card bg-card-bg border-secondary mb-4 shadow-sm">
+                    <div class="card-body p-4 d-flex">
+                        <div class="me-4 flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-4 fw-bold" style="width: 50px; height: 50px;">4</div>
+                        </div>
+                        <div>
+                            <h3 class="h5 font-heading fw-bold text-light">Create a new API key</h3>
+                            <p class="text-secondary mb-3">Click the "Create API key" button in a new project.</p>
+                            <div class="bg-surface rounded p-3 text-center border border-secondary">
+                                <i class="bi bi-key-fill text-accent fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 5 -->
+                <div class="card bg-card-bg border-secondary mb-4 shadow-sm">
+                    <div class="card-body p-4 d-flex">
+                        <div class="me-4 flex-shrink-0">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-4 fw-bold" style="width: 50px; height: 50px;">5</div>
+                        </div>
+                        <div>
+                            <h3 class="h5 font-heading fw-bold text-light">Copy the generated key</h3>
+                            <p class="text-secondary mb-0">Copy the long string of characters. Keep this secret and do not share it publicly.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 6 -->
+                <div class="card bg-card-bg border-secondary mb-5 shadow-sm border-accent">
+                    <div class="card-body p-4 d-flex">
+                        <div class="me-4 flex-shrink-0">
+                            <div class="bg-accent text-primary-dark rounded-circle d-flex align-items-center justify-content-center fs-4 fw-bold" style="width: 50px; height: 50px;">6</div>
+                        </div>
+                        <div>
+                            <h3 class="h5 font-heading fw-bold text-light">Paste into platform</h3>
+                            <p class="text-secondary mb-0">Return to our login page and paste the key to begin your interview practice.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-cta btn-lg rounded-pill px-5 shadow"><i class="bi bi-arrow-right-circle me-2"></i> Go to Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

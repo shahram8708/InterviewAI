@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}File Too Large - InterviewAI Pro{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-75">
+    <div class="text-center">
+        <div class="mb-4">
+            <i class="bi bi-file-earmark-x text-warning" style="font-size: 5rem;"></i>
+        </div>
+        <h2 class="font-heading fw-bold text-light mb-3">File Too Large</h2>
+        <p class="text-secondary mb-4 lead">The resume you tried to upload exceeds the 5MB limit.<br>Please compress it or try a different file.</p>
+        <a href="{{ url_for('resume.upload_get') }}" class="btn btn-warning rounded-pill px-4 shadow text-dark fw-bold">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Try Again with Smaller File
+        </a>
+    </div>
+</div>
+{% endblock %}
