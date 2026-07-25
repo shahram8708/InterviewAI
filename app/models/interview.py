@@ -45,6 +45,22 @@ class InterviewSession(db.Model):
             return int(self.total_words_spoken / minutes) if minutes > 0 else 0
         return 0
 
+    @property
+    def score(self):
+        if self.feedback_report and self.feedback_report.overall_score is not None:
+            return int(self.feedback_report.overall_score)
+        return 0
+
+    @property
+    def company(self):
+        return self.company_name or 'General'
+
+    @property
+    def date(self):
+        if self.started_at:
+            return self.started_at.strftime('%b %d, %Y')
+        return 'Unknown Date'
+
     def __repr__(self):
         return f'<InterviewSession {self.id}: {self.job_role} at {self.company_name}>'
 

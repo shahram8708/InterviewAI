@@ -32,8 +32,8 @@
                                 <div class="invalid-feedback">Please specify a job role.</div>
                             </div>
                             <div class="col-md-6">
-                                <label for="company" class="form-label text-secondary fw-medium">Target Company</label>
-                                <input type="text" class="form-control bg-surface border-secondary text-light" id="company" name="company" list="companyOptions" placeholder="e.g., Google (Optional)">
+                                <label for="company" class="form-label text-secondary fw-medium">Target Company <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control bg-surface border-secondary text-light" id="company" name="company_name" list="companyOptions" placeholder="e.g., Google" required>
                                 <datalist id="companyOptions">
                                     <option value="Google">
                                     <option value="Amazon">
@@ -69,11 +69,11 @@
                             <label for="interviewType" class="form-label text-secondary fw-medium">Interview Type <span class="text-danger">*</span></label>
                             <select class="form-select bg-surface border-secondary text-light" id="interviewType" name="interview_type" required>
                                 <option value="" selected disabled>Select focus area...</option>
-                                <option value="HR">HR / Culture Fit</option>
-                                <option value="Technical">Technical / Coding</option>
-                                <option value="Behavioral">Behavioral (STAR Method)</option>
-                                <option value="System Design">System Design / Architecture</option>
-                                <option value="Mixed">Mixed (General)</option>
+                                <option value="HR Interview">HR / Culture Fit</option>
+                                <option value="Technical Interview">Technical / Coding</option>
+                                <option value="Behavioral Interview">Behavioral (STAR Method)</option>
+                                <option value="System Design Interview">System Design / Architecture</option>
+                                <option value="Mixed Round">Mixed (General)</option>
                             </select>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                         <h4 class="font-heading text-light mb-4 border-bottom border-secondary pb-2">Interviewer Persona</h4>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <input type="radio" class="btn-check persona-select" name="persona" id="personaFriendly" value="Friendly Recruiter" required>
+                                <input type="radio" class="btn-check persona-select" name="interviewer_persona" id="personaFriendly" value="friendly" required>
                                 <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaFriendly">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-2">
@@ -98,7 +98,7 @@
                                 </label>
                             </div>
                             <div class="col-md-6">
-                                <input type="radio" class="btn-check persona-select" name="persona" id="personaStrict" value="Strict Hiring Manager">
+                                <input type="radio" class="btn-check persona-select" name="interviewer_persona" id="personaStrict" value="strict">
                                 <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaStrict">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-2">
@@ -112,7 +112,7 @@
                                 </label>
                             </div>
                             <div class="col-md-6">
-                                <input type="radio" class="btn-check persona-select" name="persona" id="personaTechLead" value="Senior Technical Lead">
+                                <input type="radio" class="btn-check persona-select" name="interviewer_persona" id="personaTechLead" value="technical">
                                 <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaTechLead">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-2">
@@ -126,7 +126,7 @@
                                 </label>
                             </div>
                             <div class="col-md-6">
-                                <input type="radio" class="btn-check persona-select" name="persona" id="personaFaang" value="FAANG Interviewer">
+                                <input type="radio" class="btn-check persona-select" name="interviewer_persona" id="personaFaang" value="faang">
                                 <label class="card bg-surface border-secondary h-100 cursor-pointer hover-border-accent transition-all text-start" for="personaFaang">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-2">
@@ -197,8 +197,15 @@
         const type = document.getElementById('interviewType');
         document.getElementById('summaryType').textContent = type.options[type.selectedIndex]?.text || '-';
         
-        const persona = document.querySelector('input[name="persona"]:checked');
-        document.getElementById('summaryPersona').textContent = persona ? persona.value : '-';
+        const persona = document.querySelector('input[name="interviewer_persona"]:checked');
+        // Map the key back to the display name for the summary UI
+        const personaMap = {
+            'friendly': 'Friendly Recruiter',
+            'strict': 'Strict Hiring Manager',
+            'technical': 'Senior Technical Lead',
+            'faang': 'FAANG Interviewer'
+        };
+        document.getElementById('summaryPersona').textContent = persona ? personaMap[persona.value] : '-';
     };
 
     document.querySelectorAll('input, select').forEach(el => {

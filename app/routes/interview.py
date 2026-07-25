@@ -11,6 +11,7 @@ from app.services.context_service import build_initial_context
 from app.services.research_service import research_company
 from app.services.security_service import decrypt_api_key
 from app.utils.validators import validate_job_role, validate_company_name, sanitize_input
+import json
 
 interview_bp = Blueprint('interview', __name__, url_prefix='/interview')
 
@@ -170,7 +171,14 @@ def session_view(session_id):
 
     persona_info = PERSONAS.get(interview_session.interviewer_persona, PERSONAS['friendly'])
 
+    session_data = json.dumps({
+        'id': interview_session.id,
+        'persona': interview_session.interviewer_persona,
+        'total_questions': getattr(interview_session, 'total_questions_target', 5)
+    })
+
     return render_template('interview/session.html',
-                           session=interview_session,
+                           interview_session=interview_session,
+                           session_data=session_data,
                            persona=persona_info,
                            user=user)

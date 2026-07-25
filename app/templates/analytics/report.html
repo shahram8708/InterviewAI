@@ -13,7 +13,7 @@
                 {{ report.role }} at {{ report.company or 'General' }} • {{ report.date }}
             </p>
             <div class="d-flex gap-2 ms-lg-5 ps-lg-2 d-print-none">
-                <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print / Save PDF</button>
+                <button id="print-report-btn" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="bi bi-printer me-1"></i> Print / Save PDF</button>
                 <a href="{{ url_for('interview.configure_get') }}" class="btn btn-sm btn-cta rounded-pill">Start New Interview</a>
             </div>
         </div>
@@ -185,4 +185,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script nonce="{{ csp_nonce() }}">
+    const printReportBtn = document.getElementById('print-report-btn');
+    if (printReportBtn) {
+        printReportBtn.addEventListener('click', () => window.print());
+    }
+</script>
 {% endblock %}

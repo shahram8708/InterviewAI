@@ -23,24 +23,22 @@
                     <h5 class="mb-0 text-light fw-bold"><i class="bi bi-briefcase text-accent me-2"></i>Experience</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Timeline placeholder -->
-                    <div class="position-relative ps-4 border-start border-secondary pb-4">
-                        <div class="position-absolute start-0 translate-middle-x bg-accent rounded-circle border border-card-bg" style="width: 12px; height: 12px; top: 5px;"></div>
-                        <h5 class="text-light fw-bold mb-1">Senior Software Engineer</h5>
-                        <h6 class="text-secondary mb-2">Tech Corp • 2021 - Present</h6>
-                        <ul class="text-secondary small mb-0 ps-3">
-                            <li>Led backend migration to microservices architecture.</li>
-                            <li>Mentored junior engineers and conducted code reviews.</li>
-                        </ul>
-                    </div>
-                    <div class="position-relative ps-4 border-start border-secondary">
-                        <div class="position-absolute start-0 translate-middle-x bg-secondary rounded-circle border border-card-bg" style="width: 12px; height: 12px; top: 5px;"></div>
-                        <h5 class="text-light fw-bold mb-1">Software Engineer</h5>
-                        <h6 class="text-secondary mb-2">Startup Inc • 2018 - 2021</h6>
-                        <ul class="text-secondary small mb-0 ps-3">
-                            <li>Developed REST APIs using Python and Django.</li>
-                        </ul>
-                    </div>
+                    {% if profile.experience %}
+                        {% for exp in profile.experience %}
+                            <div class="position-relative ps-4 border-start border-secondary {% if not loop.last %}pb-4{% endif %}">
+                                <div class="position-absolute start-0 translate-middle-x bg-accent rounded-circle border border-card-bg" style="width: 12px; height: 12px; top: 5px;"></div>
+                                {% if exp is mapping %}
+                                    <h5 class="text-light fw-bold mb-1">{{ exp.get('title', exp.get('role', 'Experience')) }}</h5>
+                                    <h6 class="text-secondary mb-2">{{ exp.get('company', '') }} {{ '• ' + exp.get('duration', '') if exp.get('duration') else '' }}</h6>
+                                    <p class="text-secondary small mb-0">{{ exp.get('description', '') }}</p>
+                                {% else %}
+                                    <p class="text-secondary small mb-0">{{ exp }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-secondary small mb-0">No experience found.</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -50,12 +48,20 @@
                     <h5 class="mb-0 text-light fw-bold"><i class="bi bi-code-slash text-primary me-2"></i>Projects</h5>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3 border-bottom border-secondary pb-3">
-                        <h6 class="text-light fw-bold">E-commerce Platform</h6>
-                        <p class="text-secondary small mb-1">Built a scalable e-commerce backend handling 10k+ concurrent users.</p>
-                        <span class="badge bg-surface border border-secondary text-muted">Python</span>
-                        <span class="badge bg-surface border border-secondary text-muted">Redis</span>
-                    </div>
+                    {% if profile.projects %}
+                        {% for proj in profile.projects %}
+                            <div class="mb-3 {% if not loop.last %}border-bottom border-secondary pb-3{% endif %}">
+                                {% if proj is mapping %}
+                                    <h6 class="text-light fw-bold">{{ proj.get('name', proj.get('title', 'Project')) }}</h6>
+                                    <p class="text-secondary small mb-1">{{ proj.get('description', '') }}</p>
+                                {% else %}
+                                    <p class="text-secondary small mb-1">{{ proj }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-secondary small mb-0">No projects found.</p>
+                    {% endif %}
                 </div>
             </div>
             
@@ -65,8 +71,20 @@
                     <h5 class="mb-0 text-light fw-bold"><i class="bi bi-mortarboard text-warning me-2"></i>Education</h5>
                 </div>
                 <div class="card-body">
-                    <h6 class="text-light fw-bold mb-1">B.S. Computer Science</h6>
-                    <p class="text-secondary small mb-0">University of Technology • 2014 - 2018</p>
+                    {% if profile.education %}
+                        {% for edu in profile.education %}
+                            <div class="mb-3">
+                                {% if edu is mapping %}
+                                    <h6 class="text-light fw-bold mb-1">{{ edu.get('degree', edu.get('title', 'Education')) }}</h6>
+                                    <p class="text-secondary small mb-0">{{ edu.get('institution', edu.get('school', '')) }} {{ '• ' + edu.get('year', edu.get('duration', '')) if edu.get('year') or edu.get('duration') else '' }}</p>
+                                {% else %}
+                                    <p class="text-secondary small mb-0">{{ edu }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-secondary small mb-0">No education found.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -77,7 +95,7 @@
             <div class="card bg-card-bg border-secondary shadow-sm mb-4">
                 <div class="card-body text-center">
                     <h6 class="text-secondary mb-3">Estimated Career Level</h6>
-                    <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-4 py-2 fs-5 border border-primary">Mid-Senior Level</span>
+                    <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-4 py-2 fs-5 border border-primary">{{ profile.career_level|title if profile.career_level else 'Unknown' }}</span>
                 </div>
             </div>
             
@@ -88,12 +106,16 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Python</span>
-                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Java</span>
-                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">AWS</span>
-                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Docker</span>
-                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">Kubernetes</span>
-                        <span class="badge bg-surface border border-secondary text-light px-2 py-1">System Design</span>
+                        {% if profile.skills or profile.technologies %}
+                            {% for skill in profile.skills %}
+                                <span class="badge bg-surface border border-secondary text-light px-2 py-1">{{ skill }}</span>
+                            {% endfor %}
+                            {% for tech in profile.technologies %}
+                                <span class="badge bg-surface border border-secondary text-light px-2 py-1">{{ tech }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-secondary small">No skills found.</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -105,9 +127,13 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled text-secondary small mb-0">
-                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Backend Architecture</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Cloud Deployment</li>
-                        <li><i class="bi bi-check2 text-success me-2"></i>Team Leadership</li>
+                        {% if profile.strengths %}
+                            {% for strength in profile.strengths %}
+                                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>{{ strength }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li>No strengths found.</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

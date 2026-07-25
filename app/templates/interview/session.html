@@ -40,7 +40,7 @@
         margin-bottom: 0 !important;
     }
 </style>
-<script id="session-data" type="application/json" nonce="{{ csp_nonce() }}">
+<script id="interview-data" type="application/json" nonce="{{ csp_nonce() }}">
     {{ session_data | safe }}
 </script>
 {% endblock %}
@@ -188,10 +188,7 @@
             </div>
             <div class="modal-footer border-secondary">
                 <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
-                <form method="POST" action="{{ url_for('analytics.report', session_id='current') }}" id="endInterviewForm">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <button type="submit" class="btn btn-danger rounded-pill px-4">End Interview</button>
-                </form>
+                <button type="button" class="btn btn-danger rounded-pill px-4" id="confirmEndBtn" data-bs-dismiss="modal">End Interview</button>
             </div>
         </div>
     </div>
@@ -221,5 +218,5 @@
 <audio id="aiVoice" class="d-none"></audio>
 {% endblock %}
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+<script src="{{ url_for('static', filename='js/interview.js') }}?v=4"></script>
 {% endblock %}

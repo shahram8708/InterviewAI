@@ -27,30 +27,26 @@ def validate_api_key(api_key: str) -> bool:
         logger.error(f"API key validation failed: {e}")
         return False
 
-def analyze_resume(api_key: str, page_images: list[bytes]) -> dict:
-    """Sends page images to Gemini vision to extract structured resume data."""
+def analyze_resume(api_key: str, resume_text: str) -> dict:
+    """Sends resume text to Gemini to extract structured resume data."""
     client = get_client(api_key)
-    parts = []
-    
-    for img_bytes in page_images:
-        parts.append(
-            types.Part.from_bytes(data=img_bytes, mime_type='image/png')
-        )
         
-    prompt = """
-    Extract structured information from this resume.
+    prompt = f"""
+    Extract structured information from the following resume text.
     Return ONLY a JSON object with the following exact keys:
     "skills", "education", "experience", "projects", "certifications", 
     "technologies", "strengths", "career_level", "summary".
     Each value should be a string, list, or appropriate JSON structure.
     Do not use markdown blocks around the JSON.
+    
+    Resume Text:
+    {resume_text}
     """
-    parts.append(prompt)
     
     try:
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=parts,
+            contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json"
             )

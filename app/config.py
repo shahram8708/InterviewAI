@@ -36,6 +36,7 @@ class Config:
     WTF_CSRF_TIME_LIMIT = 3600
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'instance', 'uploads')
     GEMINI_MODEL = 'gemini-2.5-flash'
+    RATELIMIT_STORAGE_URI = 'memory://'
 
 
 class DevelopmentConfig(Config):

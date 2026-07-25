@@ -69,18 +69,15 @@ def process_resume(file_storage: FileStorage, user_id: int, api_key: str) -> Res
     file_storage.save(temp_path)
     
     try:
-        # Convert to images
-        page_images = convert_pdf_to_images(temp_path)
-        
-        # Analyze with Gemini
-        resume_data = analyze_resume(api_key, page_images)
-        
-        # Extract text for raw_extracted_text
+        # Extract text for raw_extracted_text and analysis
         doc = fitz.open(temp_path)
         raw_text = ""
         for page in doc:
             raw_text += page.get_text()
         doc.close()
+        
+        # Analyze with Gemini using extracted text
+        resume_data = analyze_resume(api_key, raw_text)
         
         # Create profile
         profile = ResumeProfile(

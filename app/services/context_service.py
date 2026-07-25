@@ -73,7 +73,7 @@ def update_context(session: InterviewSession, question: str, answer: str, evalua
 
 def get_stage(session: InterviewSession) -> str:
     """Determine current interview stage based on turn count."""
-    turn_count = len(session.turns) if session.turns else 0
+    turn_count = session.turns.count() if hasattr(session.turns, 'count') else (len(session.turns) if session.turns else 0)
     total_target = session.total_questions_target or 10
     
     if turn_count == 0:
