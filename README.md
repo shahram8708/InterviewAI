@@ -9,7 +9,7 @@
 ![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**Live Demo:** `http://localhost:5000` after install · **PWA Ready** · **Dark / Light / High Contrast**
+**Live Demo:** `https://interview-ai-adfy.onrender.com` after install · **PWA Ready** · **Dark / Light / High Contrast**
 
 ---
 
