@@ -28,13 +28,3 @@ def get_score_color(score: float) -> str:
     elif score >= 70:
         return "text-warning"
     return "text-danger"
-
-def get_badge_info() -> dict:
-    return {
-        'first_interview': 'First Interview Completed',
-        'perfect_score': 'Perfect Technical Score',
-        'great_communicator': 'Great Communication',
-        'problem_solver': 'Excellent Problem Solver',
-        'streak_3': '3-Day Streak',
-        'streak_7': '7-Day Streak'
-    }

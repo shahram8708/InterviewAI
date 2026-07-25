@@ -36,6 +36,11 @@ class ProgressSnapshot(db.Model):
     """Weekly/periodic performance summary for trend tracking."""
     __tablename__ = 'progress_snapshots'
 
+    # The weekly rollup upserts by (user_id, period_start_date).
+    __table_args__ = (
+        db.Index('ix_progress_snapshots_user_period', 'user_id', 'period_start_date'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     period_start_date = db.Column(db.Date, nullable=False)
@@ -54,6 +59,14 @@ class Badge(db.Model):
     """Achievement badge earned by a user."""
     __tablename__ = 'badges'
 
+    # The achievements page and the awarding pass both look badges up by owner and type.
+    # Uniqueness of (user_id, badge_type) is enforced in scoring_service.check_and_award_badges,
+    # which never re-awards a type the user already holds.
+    __table_args__ = (
+        db.Index('ix_badges_user_badge_type', 'user_id', 'badge_type'),
+        db.Index('ix_badges_user_earned_at', 'user_id', 'earned_at'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     badge_type = db.Column(db.String(50), nullable=False)
@@ -69,6 +82,10 @@ class Badge(db.Model):
 class SkillGap(db.Model):
     """Identified skill gap from interview performance patterns."""
     __tablename__ = 'skill_gaps'
+
+    __table_args__ = (
+        db.Index('ix_skill_gaps_user_identified_at', 'user_id', 'identified_at'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

@@ -7,6 +7,7 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask, send_from_directory
+from sqlalchemy.exc import SQLAlchemyError
 from app.config import config_map
 from app.extensions import db, csrf, limiter, sess, talisman
 
@@ -154,4 +155,21 @@ def _init_database(flask_app):
     from app import models  # noqa: F401 — ensure all models are imported so create_all finds them
     with flask_app.app_context():
         db.create_all()
+        _ensure_indexes(flask_app)
         flask_app.logger.info('Database tables verified/created.')
+
+
+def _ensure_indexes(flask_app):
+    """Create any model indexes missing from an already-existing database.
+
+    create_all() only emits indexes alongside tables it creates, so databases
+    provisioned before an index was declared would never receive it. Creating each
+    index with checkfirst=True keeps startup idempotent for new and existing
+    installations alike.
+    """
+    for table in db.metadata.sorted_tables:
+        for index in table.indexes:
+            try:
+                index.create(bind=db.engine, checkfirst=True)
+            except SQLAlchemyError:
+                flask_app.logger.warning('Could not verify index %s.', index.name)

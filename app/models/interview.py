@@ -9,6 +9,14 @@ class InterviewSession(db.Model):
     """A single interview session with configuration, state, and compressed context."""
     __tablename__ = 'interview_sessions'
 
+    # Analytics reads sessions by owner, by owner+status, and by owner+completion date;
+    # these composite indexes keep the dashboard/progress aggregations index-only.
+    __table_args__ = (
+        db.Index('ix_interview_sessions_user_status', 'user_id', 'status'),
+        db.Index('ix_interview_sessions_user_completed_at', 'user_id', 'completed_at'),
+        db.Index('ix_interview_sessions_user_started_at', 'user_id', 'started_at'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     resume_profile_id = db.Column(db.Integer, db.ForeignKey('resume_profiles.id'), nullable=False)

@@ -6,102 +6,62 @@
         <h1 class="font-heading fw-bold text-light">Achievements</h1>
         <p class="text-secondary">Track your milestones and collect badges.</p>
         <div class="badge bg-surface border border-secondary text-light px-4 py-2 mt-2 fs-6">
-            Total Badges: <span class="text-accent fw-bold ms-1">4 / 15</span>
+            Total Badges: <span class="text-accent fw-bold ms-1">{{ earned_count }} / {{ total_count }}</span>
+        </div>
+        <div class="progress bg-surface mx-auto mt-3" style="height: 6px; max-width: 320px;">
+            <div class="progress-bar bg-accent" role="progressbar"
+                 style="width: {{ completion_percent }}%"
+                 aria-valuenow="{{ completion_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
 
+    {% if statistics.total_sessions == 0 %}
+    <div class="text-center py-4 mb-4">
+        <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 90px; height: 90px;">
+            <i class="bi bi-trophy text-secondary" style="font-size: 2.5rem;"></i>
+        </div>
+        <h4 class="font-heading fw-bold text-light mb-2">No achievements unlocked yet</h4>
+        <p class="text-secondary mb-3">Complete your first interview to start unlocking badges.</p>
+        <a href="{{ url_for('interview.configure_get') }}" class="btn btn-cta rounded-pill px-4 shadow">Start Your First Interview</a>
+    </div>
+    {% endif %}
+
     <div class="row g-4">
-        <!-- Earned Badges -->
+        {% for achievement in achievements %}
         <div class="col-md-3 col-sm-6">
-            <div class="card bg-card-bg border-accent shadow-sm h-100 text-center">
+            <div class="card bg-card-bg shadow-sm h-100 text-center {% if achievement.is_earned %}border-accent{% else %}border-secondary opacity-75{% endif %}">
                 <div class="card-body p-4">
-                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-accent shadow position-relative" style="width: 80px; height: 80px;">
-                        <span class="fs-1">🎯</span>
+                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 position-relative {% if achievement.is_earned %}border border-accent shadow{% else %}border border-secondary grayscale{% endif %}" style="width: 80px; height: 80px;">
+                        <span class="fs-1 {% if not achievement.is_earned %}opacity-50{% endif %}">{{ achievement.icon }}</span>
+                        {% if achievement.is_earned %}
                         <span class="position-absolute bottom-0 end-0 bg-accent text-primary-dark rounded-circle border border-card-bg d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="bi bi-check-lg fw-bold"></i></span>
-                    </div>
-                    <h5 class="text-light fw-bold font-heading mb-1">First Steps</h5>
-                    <p class="text-secondary small mb-2">Completed 1st interview</p>
-                    <small class="text-muted">Earned May 10</small>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3 col-sm-6">
-            <div class="card bg-card-bg border-accent shadow-sm h-100 text-center">
-                <div class="card-body p-4">
-                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-accent shadow position-relative" style="width: 80px; height: 80px;">
-                        <span class="fs-1">🔥</span>
-                        <span class="position-absolute bottom-0 end-0 bg-accent text-primary-dark rounded-circle border border-card-bg d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="bi bi-check-lg fw-bold"></i></span>
-                    </div>
-                    <h5 class="text-light fw-bold font-heading mb-1">On Fire</h5>
-                    <p class="text-secondary small mb-2">Maintained a 3-day streak</p>
-                    <small class="text-muted">Earned May 14</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3 col-sm-6">
-            <div class="card bg-card-bg border-accent shadow-sm h-100 text-center">
-                <div class="card-body p-4">
-                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-accent shadow position-relative" style="width: 80px; height: 80px;">
-                        <span class="fs-1">🗣️</span>
-                        <span class="position-absolute bottom-0 end-0 bg-accent text-primary-dark rounded-circle border border-card-bg d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="bi bi-check-lg fw-bold"></i></span>
-                    </div>
-                    <h5 class="text-light fw-bold font-heading mb-1">Silver Tongue</h5>
-                    <p class="text-secondary small mb-2">Scored 90+ in Communication</p>
-                    <small class="text-muted">Earned May 15</small>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3 col-sm-6">
-            <div class="card bg-card-bg border-accent shadow-sm h-100 text-center">
-                <div class="card-body p-4">
-                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-accent shadow position-relative" style="width: 80px; height: 80px;">
-                        <span class="fs-1">🏢</span>
-                        <span class="position-absolute bottom-0 end-0 bg-accent text-primary-dark rounded-circle border border-card-bg d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="bi bi-check-lg fw-bold"></i></span>
-                    </div>
-                    <h5 class="text-light fw-bold font-heading mb-1">FAANG Ready</h5>
-                    <p class="text-secondary small mb-2">Passed a FAANG persona interview</p>
-                    <small class="text-muted">Earned May 18</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Locked Badges -->
-        <div class="col-md-3 col-sm-6">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100 text-center opacity-75">
-                <div class="card-body p-4">
-                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-secondary grayscale" style="width: 80px; height: 80px;">
-                        <span class="fs-1 opacity-50">💯</span>
+                        {% else %}
                         <span class="position-absolute bottom-0 end-0 bg-secondary text-light rounded-circle border border-card-bg d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="bi bi-lock-fill"></i></span>
+                        {% endif %}
                     </div>
-                    <h5 class="text-muted fw-bold font-heading mb-1">Perfectionist</h5>
-                    <p class="text-secondary small mb-3">Score 100 on any technical interview</p>
-                    <div class="progress bg-surface" style="height: 4px;">
-                        <div class="progress-bar bg-secondary" style="width: 85%"></div>
-                    </div>
-                    <small class="text-muted mt-1 d-block">Best: 85</small>
+                    <h5 class="fw-bold font-heading mb-1 {% if achievement.is_earned %}text-light{% else %}text-muted{% endif %}">{{ achievement.name }}</h5>
+                    <p class="text-secondary small mb-2">{{ achievement.description }}</p>
+
+                    {% if achievement.is_earned %}
+                        {% if achievement.earned_at %}
+                        <small class="text-muted">Earned {{ achievement.earned_at | format_date }}</small>
+                        {% else %}
+                        <small class="text-muted">Unlocked</small>
+                        {% endif %}
+                    {% elif achievement.progress_target %}
+                        <div class="progress bg-surface" style="height: 4px;">
+                            <div class="progress-bar bg-secondary" role="progressbar"
+                                 style="width: {{ achievement.progress_percent }}%"
+                                 aria-valuenow="{{ achievement.progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted mt-1 d-block">{{ achievement.progress_current }} / {{ achievement.progress_target }}</small>
+                    {% else %}
+                        <small class="text-muted">Not yet unlocked</small>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-3 col-sm-6">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100 text-center opacity-75">
-                <div class="card-body p-4">
-                    <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-3 border border-secondary grayscale" style="width: 80px; height: 80px;">
-                        <span class="fs-1 opacity-50">🏆</span>
-                        <span class="position-absolute bottom-0 end-0 bg-secondary text-light rounded-circle border border-card-bg d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.7rem;"><i class="bi bi-lock-fill"></i></span>
-                    </div>
-                    <h5 class="text-muted fw-bold font-heading mb-1">Marathon</h5>
-                    <p class="text-secondary small mb-3">Complete 50 interviews</p>
-                    <div class="progress bg-surface" style="height: 4px;">
-                        <div class="progress-bar bg-secondary" style="width: 24%"></div>
-                    </div>
-                    <small class="text-muted mt-1 d-block">12 / 50</small>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

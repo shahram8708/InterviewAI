@@ -7,9 +7,8 @@ from app.utils.helpers import get_current_user
 from app.extensions import db
 from app.services.security_service import encrypt_api_key
 from app.services.gemini_service import validate_api_key
-from app.models import InterviewSession, ResumeProfile, ProgressSnapshot, Badge, SkillGap
 from app.utils.validators import validate_api_key_format, validate_name, sanitize_input
-from app.services.scoring_service import calculate_streak
+from app.services import analytics_service
 
 main_bp = Blueprint('main', __name__)
 
@@ -25,33 +24,19 @@ def landing():
 @main_bp.route('/dashboard')
 @login_required
 def dashboard():
-    """Main hub after login with recent sessions, streaks, badges, skill gaps."""
+    """Main hub after login — every metric is derived from the user's own records."""
     user = get_current_user()
-    recent_sessions = InterviewSession.query.filter_by(user_id=user.id)\
-        .order_by(InterviewSession.started_at.desc()).limit(5).all()
-    active_resume = ResumeProfile.query.filter_by(user_id=user.id, is_active=True).first()
-    badges = Badge.query.filter_by(user_id=user.id).order_by(Badge.earned_at.desc()).limit(5).all()
-    skill_gaps = SkillGap.query.filter_by(user_id=user.id).order_by(SkillGap.identified_at.desc()).limit(5).all()
-    streak = calculate_streak(user.id)
 
-    completed_sessions = InterviewSession.query.filter_by(user_id=user.id, status='completed').all()
-    scores = []
-    for s in completed_sessions:
-        if s.feedback_report:
-            scores.append({
-                'date': s.completed_at.strftime('%b %d') if s.completed_at else '',
-                'score': s.feedback_report.overall_score
-            })
+    statistics = analytics_service.get_user_statistics(user.id)
 
     return render_template('main/dashboard.html',
                            user=user,
-                           recent_sessions=recent_sessions,
-                           active_resume=active_resume,
-                           badges=badges,
-                           skill_gaps=skill_gaps,
-                           streak=streak,
-                           scores=scores,
-                           total_sessions=len(completed_sessions))
+                           statistics=statistics,
+                           recent_sessions=analytics_service.get_recent_sessions(user.id),
+                           active_resume=analytics_service.get_active_resume(user.id),
+                           recent_badges=analytics_service.get_recent_badges(user.id),
+                           skill_gaps=analytics_service.get_skill_gap_summary(user.id),
+                           score_trend=analytics_service.get_score_trend(user.id))
 
 
 @main_bp.route('/about')

@@ -1,66 +1,77 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Simple Bar Chart for scores
-  const canvas = document.getElementById('scoreChart');
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
-    // Mock data for scores
-    const scores = [65, 70, 78, 85, 82, 90, 88];
-    const width = canvas.width;
-    const height = canvas.height;
-    
-    const barWidth = width / scores.length - 10;
-    const maxScore = 100;
-    
-    ctx.clearRect(0, 0, width, height);
-    
-    scores.forEach((score, index) => {
-      const barHeight = (score / maxScore) * height;
-      const x = index * (barWidth + 10) + 5;
-      const y = height - barHeight;
-      
-      // Gradient
-      const gradient = ctx.createLinearGradient(0, y, 0, height);
-      gradient.addColorStop(0, '#4FC0D0');
-      gradient.addColorStop(1, '#1B6B93');
-      
-      ctx.fillStyle = gradient;
-      ctx.fillRect(x, y, barWidth, barHeight);
-      
-      // Label
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-text-secondary');
+  // Score trend charts. Data comes from the server as real completed-interview
+  // scores serialised onto the canvas; nothing is drawn when there is no data.
+  document.querySelectorAll('canvas.score-chart').forEach((canvas) => {
+    let points = [];
+    try {
+      points = JSON.parse(canvas.dataset.scores || '[]');
+    } catch (error) {
+      return;
+    }
+    if (!Array.isArray(points) || points.length === 0) {
+      return;
+    }
+
+    const styles = getComputedStyle(document.documentElement);
+    const accent = styles.getPropertyValue('--color-accent').trim() || '#4FC0D0';
+    const primary = styles.getPropertyValue('--color-primary').trim() || '#1B6B93';
+    const labelColor = styles.getPropertyValue('--color-text-secondary').trim() || '#94A3B8';
+
+    const render = () => {
+      // Match the backing store to the element's rendered size for a crisp chart.
+      const ratio = window.devicePixelRatio || 1;
+      const cssWidth = canvas.clientWidth;
+      const cssHeight = canvas.clientHeight || 220;
+      canvas.width = cssWidth * ratio;
+      canvas.height = cssHeight * ratio;
+
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+      const paddingTop = 20;
+      const paddingBottom = 28;
+      const plotHeight = cssHeight - paddingTop - paddingBottom;
+      const maxScore = 100;
+      const slotWidth = cssWidth / points.length;
+      const barWidth = Math.max(6, Math.min(48, slotWidth - 12));
+
       ctx.font = '12px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(score.toString(), x + barWidth / 2, y - 5);
+
+      points.forEach((point, index) => {
+        const score = Math.max(0, Math.min(maxScore, Number(point.score) || 0));
+        const barHeight = (score / maxScore) * plotHeight;
+        const x = index * slotWidth + (slotWidth - barWidth) / 2;
+        const y = paddingTop + plotHeight - barHeight;
+
+        const gradient = ctx.createLinearGradient(0, y, 0, paddingTop + plotHeight);
+        gradient.addColorStop(0, accent);
+        gradient.addColorStop(1, primary);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, y, barWidth, barHeight);
+
+        ctx.fillStyle = labelColor;
+        ctx.fillText(String(Math.round(score)), x + barWidth / 2, y - 6);
+        if (point.date && slotWidth > 34) {
+          ctx.fillText(point.date, x + barWidth / 2, cssHeight - 8);
+        }
+      });
+    };
+
+    render();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(render, 150);
+    });
+  });
+
+  // Badge tooltips
+  if (window.bootstrap && window.bootstrap.Tooltip) {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+      window.bootstrap.Tooltip.getOrCreateInstance(el);
     });
   }
-
-  // Animate Stat Numbers
-  const stats = document.querySelectorAll('.stat-number');
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const target = entry.target;
-        const endValue = parseInt(target.getAttribute('data-value'), 10) || 0;
-        let startValue = 0;
-        const duration = 1500;
-        const step = endValue / (duration / 16);
-        
-        function updateCounter() {
-          startValue += step;
-          if (startValue < endValue) {
-            target.textContent = Math.floor(startValue);
-            requestAnimationFrame(updateCounter);
-          } else {
-            target.textContent = endValue;
-          }
-        }
-        
-        updateCounter();
-        observer.unobserve(target);
-      }
-    });
-  }, { threshold: 0.5 });
-  
-  stats.forEach(stat => observer.observe(stat));
 });

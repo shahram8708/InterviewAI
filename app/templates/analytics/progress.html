@@ -4,46 +4,81 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="font-heading fw-bold text-light mb-0">Progress Dashboard</h1>
-        <div class="badge bg-cta text-white px-3 py-2 fs-6 rounded-pill border border-cta shadow-sm">
-            <i class="bi bi-fire me-1"></i> 3 Day Streak
+        <div class="badge {% if statistics.current_streak > 0 %}bg-cta border-cta{% else %}bg-surface border-secondary{% endif %} text-white px-3 py-2 fs-6 rounded-pill border shadow-sm">
+            <i class="bi bi-fire me-1"></i>
+            {{ statistics.current_streak }} Day{{ '' if statistics.current_streak == 1 else 's' }} Streak
         </div>
     </div>
+
+    {% if statistics.completed_sessions == 0 %}
+    <div class="text-center py-5">
+        <div class="bg-surface rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+            <i class="bi bi-graph-up text-secondary" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="font-heading fw-bold text-light mb-2">No progress data yet</h3>
+        <p class="text-secondary mb-4">Complete an interview and your scores, trends, and speech analytics will appear here.</p>
+        <a href="{{ url_for('interview.configure_get') }}" class="btn btn-cta rounded-pill px-4 shadow">Start Your First Interview</a>
+    </div>
+    {% else %}
 
     <!-- Top Stats -->
     <div class="row g-4 mb-4">
         <div class="col-md-3 col-6">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+            <div class="card bg-card-bg border-secondary shadow-sm">
                 <div class="card-body text-center p-4">
                     <h6 class="text-secondary small text-uppercase fw-bold mb-2">Avg Score</h6>
-                    <h2 class="text-light font-heading fw-bold mb-0">82<span class="fs-6 text-secondary fw-normal">/100</span></h2>
-                    <span class="text-success small"><i class="bi bi-arrow-up-short"></i>+4 pts this week</span>
+                    {% if statistics.scored_sessions > 0 %}
+                    <h2 class="text-light font-heading fw-bold mb-0">{{ statistics.average_score }}<span class="fs-6 text-secondary fw-normal">/100</span></h2>
+                        {% if activity.score_change is not none and activity.score_change != 0 %}
+                        <span class="small {% if activity.score_change > 0 %}text-success{% else %}text-danger{% endif %}">
+                            <i class="bi {% if activity.score_change > 0 %}bi-arrow-up-short{% else %}bi-arrow-down-short{% endif %}"></i>{{ activity.score_change | abs }} pts vs previous {{ activity.window_days }} days
+                        </span>
+                        {% else %}
+                        <span class="text-secondary small">Across {{ statistics.scored_sessions }} scored interview{{ '' if statistics.scored_sessions == 1 else 's' }}</span>
+                        {% endif %}
+                    {% else %}
+                    <h2 class="text-light font-heading fw-bold mb-0">—</h2>
+                    <span class="text-secondary small">No scored interviews yet</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+            <div class="card bg-card-bg border-secondary shadow-sm ">
                 <div class="card-body text-center p-4">
                     <h6 class="text-secondary small text-uppercase fw-bold mb-2">Interviews</h6>
-                    <h2 class="text-light font-heading fw-bold mb-0">12</h2>
+                    <h2 class="text-light font-heading fw-bold mb-0">{{ statistics.completed_sessions }}</h2>
                     <span class="text-secondary small">Total completed</span>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+            <div class="card bg-card-bg border-secondary shadow-sm ">
                 <div class="card-body text-center p-4">
                     <h6 class="text-secondary small text-uppercase fw-bold mb-2">Top Skill</h6>
-                    <h4 class="text-success font-heading fw-bold mb-0 mt-2">Communication</h4>
-                    <span class="text-secondary small">Avg: 88/100</span>
+                    {% if category_averages %}
+                    {% set top = category_averages[0] %}
+                    <h4 class="text-success font-heading fw-bold mb-0 mt-2">{{ top.label }}</h4>
+                    <span class="text-secondary small">Avg: {{ top.average }}/100</span>
+                    {% else %}
+                    <h4 class="text-secondary font-heading fw-bold mb-0 mt-2">—</h4>
+                    <span class="text-secondary small">Awaiting scored feedback</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100">
+            <div class="card bg-card-bg border-secondary shadow-sm ">
                 <div class="card-body text-center p-4">
                     <h6 class="text-secondary small text-uppercase fw-bold mb-2">Focus Area</h6>
-                    <h4 class="text-warning font-heading fw-bold mb-0 mt-2">System Design</h4>
-                    <span class="text-secondary small">Avg: 70/100</span>
+                    {% if category_averages %}
+                    {% set focus = category_averages[-1] %}
+                    <h4 class="text-warning font-heading fw-bold mb-0 mt-2">{{ focus.label }}</h4>
+                    <span class="text-secondary small">Avg: {{ focus.average }}/100</span>
+                    {% else %}
+                    <h4 class="text-secondary font-heading fw-bold mb-0 mt-2">—</h4>
+                    <span class="text-secondary small">Awaiting scored feedback</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -52,86 +87,156 @@
     <div class="row g-4">
         <!-- Chart -->
         <div class="col-lg-8">
-            <div class="card bg-card-bg border-secondary shadow-sm h-100">
-                <div class="card-header bg-transparent border-secondary py-3 d-flex justify-content-between align-items-center">
+            <div class="card bg-card-bg border-secondary shadow-sm ">
+                <div class="card-header bg-transparent border-secondary py-3">
                     <h5 class="mb-0 text-light fw-bold font-heading">Score Trend</h5>
-                    <select class="form-select form-select-sm bg-surface border-secondary text-light w-auto">
-                        <option>Last 30 Days</option>
-                        <option>Last 3 Months</option>
-                    </select>
                 </div>
                 <div class="card-body p-4">
-                    <!-- Chart.js Canvas Placeholder -->
-                    <div class="w-100 h-100 min-vh-25 bg-surface rounded border border-secondary d-flex align-items-center justify-content-center position-relative">
-                         <span class="text-muted">Chart visualization goes here</span>
-                         <!-- Mock SVG Chart -->
-                         <svg width="100%" height="100%" class="position-absolute top-0 start-0 opacity-50" preserveAspectRatio="none">
-                            <polyline fill="none" stroke="#4FC0D0" stroke-width="3" points="0,200 50,180 100,190 150,150 200,160 250,120 300,130 350,90 400,70" />
-                            <polyline fill="none" stroke="#22C55E" stroke-width="2" stroke-dasharray="4" points="0,200 100,180 200,160 300,120 400,60" />
-                         </svg>
+                    {% if score_trend %}
+                    <canvas class="score-chart" height="260" data-scores="{{ score_trend | tojson | forceescape }}"
+                            aria-label="Chart of your interview scores over time" role="img"></canvas>
+                    <p class="text-secondary small mb-0 mt-3">
+                        Showing your {{ score_trend | length }} most recent scored interview{{ '' if score_trend | length == 1 else 's' }}.
+                    </p>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-bar-chart text-secondary" style="font-size: 2.5rem;"></i>
+                        <p class="text-secondary mb-0 mt-3">No scored interviews yet — your score trend will appear once feedback reports are generated.</p>
                     </div>
+                    {% endif %}
                 </div>
             </div>
+
+            {% if weekly_activity %}
+            <div class="card bg-card-bg border-secondary shadow-sm mt-4">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold font-heading">Weekly Activity</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled mb-0">
+                        {% set max_sessions = weekly_activity | map(attribute='sessions') | max %}
+                        {% for week in weekly_activity %}
+                        <li class="{% if not loop.last %}mb-3{% endif %}">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-light small">Week of {{ week.label }}</span>
+                                <span class="text-secondary small">
+                                    {{ week.sessions }} interview{{ '' if week.sessions == 1 else 's' }}{% if week.average_score is not none %} • avg {{ week.average_score }}{% endif %}
+                                </span>
+                            </div>
+                            <div class="progress bg-surface" style="height: 6px;">
+                                <div class="progress-bar bg-accent" role="progressbar"
+                                     style="width: {{ (week.sessions / max_sessions * 100) | round | int }}%"
+                                     aria-valuenow="{{ week.sessions }}" aria-valuemin="0" aria-valuemax="{{ max_sessions }}"></div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Sidebar -->
         <div class="col-lg-4">
+            {% if category_averages %}
+            <div class="card bg-card-bg border-secondary shadow-sm mb-4">
+                <div class="card-header bg-transparent border-secondary py-3">
+                    <h5 class="mb-0 text-light fw-bold font-heading">Category Averages</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled mb-0">
+                        {% for category in category_averages %}
+                        <li class="{% if not loop.last %}mb-3{% endif %}">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-light small">{{ category.label }}</span>
+                                <span class="small {{ category.average | score_color }}">{{ category.average }}</span>
+                            </div>
+                            <div class="progress bg-surface" style="height: 6px;">
+                                <div class="progress-bar {% if category.average >= 85 %}bg-success{% elif category.average >= 70 %}bg-warning{% else %}bg-danger{% endif %}"
+                                     role="progressbar" style="width: {{ category.average }}%"
+                                     aria-valuenow="{{ category.average }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="card bg-card-bg border-secondary shadow-sm mb-4">
                 <div class="card-header bg-transparent border-secondary py-3">
                     <h5 class="mb-0 text-light fw-bold font-heading">Skill Gaps (Severity)</h5>
                 </div>
                 <div class="card-body p-4">
+                    {% if skill_gaps %}
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-light small">Concurrency (Java)</span>
-                                <span class="badge bg-danger rounded-pill">High</span>
+                        {% for gap in skill_gaps %}
+                        <li class="{% if not loop.last %}mb-3{% endif %}">
+                            <div class="d-flex justify-content-between mb-1 gap-2">
+                                <span class="text-light small">{{ gap.skill_name }}</span>
+                                <span class="badge {% if gap.severity == 'high' %}bg-danger{% elif gap.severity == 'medium' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} rounded-pill text-capitalize">{{ gap.severity }}</span>
                             </div>
-                            <div class="progress bg-surface" style="height: 6px;">
-                                <div class="progress-bar bg-danger" style="width: 30%"></div>
-                            </div>
-                        </li>
-                        <li class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-light small">Database Sharding</span>
-                                <span class="badge bg-warning text-dark rounded-pill">Med</span>
-                            </div>
-                            <div class="progress bg-surface" style="height: 6px;">
-                                <div class="progress-bar bg-warning" style="width: 55%"></div>
+                            <div class="text-secondary small">
+                                Identified {{ gap.occurrences }} time{{ '' if gap.occurrences == 1 else 's' }} • last {{ gap.last_identified_at | format_date }}
                             </div>
                         </li>
-                        <li>
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-light small">STAR Method Structuring</span>
-                                <span class="badge bg-info text-dark rounded-pill">Low</span>
-                            </div>
-                            <div class="progress bg-surface" style="height: 6px;">
-                                <div class="progress-bar bg-info" style="width: 75%"></div>
-                            </div>
-                        </li>
+                        {% endfor %}
                     </ul>
+                    {% else %}
+                    <p class="text-secondary small mb-0">No skill gaps identified yet.</p>
+                    {% endif %}
                 </div>
             </div>
-            
+
             <div class="card bg-card-bg border-secondary shadow-sm">
                 <div class="card-header bg-transparent border-secondary py-3">
                     <h5 class="mb-0 text-light fw-bold font-heading">Speech Analytics</h5>
                 </div>
                 <div class="card-body p-4">
+                    {% if statistics.total_words_spoken > 0 %}
                     <div class="mb-3">
-                        <span class="text-secondary small d-block mb-1">Filler Words Trend</span>
-                        <div class="d-flex align-items-center text-success">
-                            <i class="bi bi-graph-down-arrow fs-4 me-2"></i>
-                            <span class="fw-bold">-15% this week</span>
-                        </div>
-                    </div>
-                    <div>
                         <span class="text-secondary small d-block mb-1">Speaking Rate</span>
-                        <span class="text-light fw-bold">140 WPM <span class="text-success small ms-2">(Optimal)</span></span>
+                        {% if statistics.average_wpm > 0 %}
+                        <span class="text-light fw-bold">
+                            {{ statistics.average_wpm }} WPM
+                            {% if 120 <= statistics.average_wpm <= 160 %}
+                            <span class="text-success small ms-2">(Optimal)</span>
+                            {% elif statistics.average_wpm < 120 %}
+                            <span class="text-warning small ms-2">(Below optimal)</span>
+                            {% else %}
+                            <span class="text-warning small ms-2">(Above optimal)</span>
+                            {% endif %}
+                        </span>
+                        {% else %}
+                        <span class="text-secondary small">Not measured yet</span>
+                        {% endif %}
                     </div>
+                    <div class="mb-3">
+                        <span class="text-secondary small d-block mb-1">Filler Words</span>
+                        <span class="text-light fw-bold">{{ statistics.total_filler_words }}</span>
+                        <span class="text-secondary small ms-1">
+                            across {{ statistics.total_words_spoken }} words ({{ (statistics.filler_rate * 100) | round(1) }}%)
+                        </span>
+                    </div>
+                    {% if statistics.filler_breakdown %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for word, count in statistics.filler_breakdown.items() %}
+                        <span class="badge bg-surface border border-secondary text-warning">{{ word }} ({{ count }})</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <span class="text-success small"><i class="bi bi-check-circle me-1"></i>No filler words detected.</span>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-secondary small mb-0">No speech recorded yet. Answer interview questions aloud to see your pace and filler-word analytics.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
+{% endblock %}
+{% block extra_js %}
+<script nonce="{{ csp_nonce() }}" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

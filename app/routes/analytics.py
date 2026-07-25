@@ -4,8 +4,8 @@ Analytics routes — feedback reports, interview history, progress, and achievem
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from app.utils.decorators import login_required
 from app.utils.helpers import get_current_user
-from app.models import InterviewSession, FeedbackReport, ProgressSnapshot, Badge, SkillGap
-from app.services.scoring_service import calculate_streak
+from app.models import InterviewSession
+from app.services import analytics_service
 
 analytics_bp = Blueprint('analytics', __name__)
 
@@ -100,63 +100,29 @@ def history():
 @analytics_bp.route('/progress')
 @login_required
 def progress():
-    """Progress dashboard with trends, weekly reports, streaks, and skill gaps."""
+    """Progress dashboard — trends, weekly activity, streaks, and skill gaps."""
     user = get_current_user()
 
-    snapshots = ProgressSnapshot.query.filter_by(user_id=user.id)\
-        .order_by(ProgressSnapshot.period_start_date.desc()).limit(12).all()
-    snapshots.reverse()
-
-    skill_gaps = SkillGap.query.filter_by(user_id=user.id)\
-        .order_by(SkillGap.identified_at.desc()).limit(10).all()
-
-    streak = calculate_streak(user.id)
-
-    # Aggregate score data for chart
-    completed = InterviewSession.query.filter_by(user_id=user.id, status='completed')\
-        .order_by(InterviewSession.completed_at.desc()).limit(20).all()
-    completed.reverse()
-
-    score_data = []
-    for s in completed:
-        if s.feedback_report:
-            score_data.append({
-                'date': s.completed_at.strftime('%b %d') if s.completed_at else '',
-                'score': s.feedback_report.overall_score,
-                'company': s.company_name
-            })
+    statistics = analytics_service.get_user_statistics(user.id)
 
     return render_template('analytics/progress.html',
-                           snapshots=snapshots,
-                           skill_gaps=skill_gaps,
-                           streak=streak,
-                           score_data=score_data)
+                           statistics=statistics,
+                           category_averages=analytics_service.get_category_averages(user.id),
+                           score_trend=analytics_service.get_score_trend(user.id),
+                           weekly_activity=analytics_service.get_weekly_activity(user.id),
+                           activity=analytics_service.get_recent_activity_comparison(user.id),
+                           skill_gaps=analytics_service.get_skill_gap_summary(user.id, limit=10))
 
 
 @analytics_bp.route('/achievements')
 @login_required
 def achievements():
-    """Display the user's badge collection and progress toward next badges."""
+    """Display achievements with unlock state and progress computed from real activity."""
     user = get_current_user()
-    earned_badges = Badge.query.filter_by(user_id=user.id)\
-        .order_by(Badge.earned_at.desc()).all()
 
-    # Define all possible badges for the "unearned" display
-    all_badge_types = {
-        'first_interview': {'name': 'First Steps', 'desc': 'Complete your first interview', 'icon': '🎯'},
-        'five_interviews': {'name': 'High Five', 'desc': 'Complete 5 interviews', 'icon': '🖐️'},
-        'ten_interviews': {'name': 'Perfect Ten', 'desc': 'Complete 10 interviews', 'icon': '🔟'},
-        'perfect_score': {'name': 'Perfectionist', 'desc': 'Score 95+ in an interview', 'icon': '⭐'},
-        'streak_3': {'name': 'On Fire', 'desc': 'Practice 3 days in a row', 'icon': '🔥'},
-        'streak_7': {'name': 'Unstoppable', 'desc': 'Practice 7 days in a row', 'icon': '🚀'},
-        'speed_demon': {'name': 'Paced Perfectly', 'desc': 'Maintain ideal speaking speed', 'icon': '⏱️'},
-        'smooth_talker': {'name': 'Smooth Talker', 'desc': 'Very few filler words used', 'icon': '🗣️'},
-        'company_expert': {'name': 'Company Expert', 'desc': 'Complete 3+ interviews for one company', 'icon': '🏢'},
-    }
-
-    earned_types = {b.badge_type for b in earned_badges}
+    statistics = analytics_service.get_user_statistics(user.id)
+    achievement_data = analytics_service.build_achievements(user.id, statistics)
 
     return render_template('analytics/achievements.html',
-                           earned_badges=earned_badges,
-                           all_badge_types=all_badge_types,
-                           earned_types=earned_types)
+                           statistics=statistics,
+                           **achievement_data)
